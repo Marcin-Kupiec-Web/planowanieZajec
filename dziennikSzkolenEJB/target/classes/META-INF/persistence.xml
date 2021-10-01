@@ -9,30 +9,6 @@
 	    <class>com.edziennik.logi.model.Logi</class>
 	    <class>com.edziennik.dniWolne.model.Dniwolne</class>
 	    <class>com.edziennik.sale.model.Sale</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.AdnotacjeUrzedowe</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.Kompania</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.Kontrole</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.Obecnosc</class>
-	    <class>com.edziennik.wiadomosci.model.Wiadomosci</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.ObecnoscPoprawa</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.Ocena</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.OcenyNaglowek</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.Ogloszenia</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.PlanZajec</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.Pluton</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.Przedmiot</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.Sluchacze</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.StrukturaKursu</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.Tematy</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.Wydarzenia</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.ZadaniaZlecone</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.ZajeciaDodatkowe</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.Zespolped</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.ZrodloDanych</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.Przedmiottemat</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.Zaklad</class>
-	    <class>com.edziennik.sluchacze.zajecia.model.Specjalizacja</class>
-	    <class>com.plany.model.Planyzaklady</class>
 	    <class>com.plany.model.UserBlokadaPlany</class>
 	    <class>com.godzinyZajec.model.Godzinyzajec</class>
 	    <class>com.edziennik.logi.model.LogiDaneosobowe</class>
