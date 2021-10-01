@@ -1,0 +1,77 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/BasicTemplate.html">
+	<ui:define name="styleCSS"><h:outputStylesheet name="css/planZajec.css" /></ui:define>	
+
+<ui:define name="content">
+	<p:outputPanel deferred="true" >
+		<div class="shadow bg-white p-10 m-10">
+         						
+         						<h:form>
+         							<h:panelGrid columns="12" class="m-10">
+         									<p:commandButton icon="ui-icon-circle-arrow-w" action="#{planZajec.init}" update="timeline,@form" >
+													<f:setPropertyActionListener value="prev" target="#{planZajec.move}"></f:setPropertyActionListener>
+											</p:commandButton>
+         									<p:calendar id="rokPlan" value="#{planZajec.rok}" pattern="dd-MM-yyyy" locale="pl" timeZone="Europe/Warsaw"  navigator="true" size="10" styleClass="calendar">
+         										<p:ajax event="dateSelect" listener="#{planZajec.init}" update="timeline"  />
+         										<p:ajax event="change" listener="#{planZajec.init}" update="timeline" />
+         									</p:calendar>
+         										<p:commandButton icon="ui-icon-home" action="#{planZajec.init}" update="timeline,@form" >
+													<f:setPropertyActionListener value="today" target="#{planZajec.move}"></f:setPropertyActionListener>
+												</p:commandButton>
+												<p:commandButton icon="ui-icon-circle-arrow-e" action="#{planZajec.init}" update="timeline,@form" >
+													<f:setPropertyActionListener value="next" target="#{planZajec.move}"></f:setPropertyActionListener>
+												</p:commandButton>
+												<p:outputLabel for="zaklad" value="Zakład: " class="align-bottom" rendered="false"/>
+         								<p:selectOneMenu id="zaklad" value="#{planZajec.zaklad}" rendered="false">
+         								<p:ajax event="change" listener="#{planZajec.init}" update="timeline" />
+         									<f:selectItems value="#{planZajec.zaklady}"/>
+         								</p:selectOneMenu>
+         							</h:panelGrid>
+         						</h:form>
+        				
+        					<div style="clear:both"></div>		
+ 				<p:timeline id="timeline" value="#{planZajec.model}" 
+ 							locale="plT"
+					        editable="false" eventMargin="10" eventMarginAxis="0" 
+					        start="#{planZajec.start}" 
+					        end="#{planZajec.end}" 
+					        showNavigation="false" showButtonNew="false" 
+					        axisOnTop="true" stackEvents="false" groupMinHeight="40" />  
+			</div>	
+	</p:outputPanel>        
+		<!-- 	
+			
+			<h:form id="formWolniNauczyciele">
+				<p:dataTable id="belf" var="belfs" value="#{planZajec.nauczycieleWolni}" style="text-align:center;width:90%;margin:auto">
+							<f:facet name="header">
+								<h:outputText>Wykładowcy bez zajęć</h:outputText>
+							</f:facet>
+							<p:column headerText="Nazwisko" sortBy="#{belfs.nazwiskoUsers}">
+									<h:outputText  value="#{belfs.nazwiskoUsers}"/>
+							</p:column>
+							<p:column headerText="Imię" sortBy="#{belfs.imieUsers}">
+									<h:outputText  value="#{belfs.imieUsers}"/>
+							</p:column>
+							<p:column headerText="Zakład" sortBy="#{belfs.zakladUsers}">
+									<h:outputText  value="#{belfs.zakladUsers}"/>
+							</p:column>
+							<p:column headerText="Specjalizacja" sortBy="#{belfs.specjalizacjas}">
+									<h:outputText  value="#{belfs.specjalizacjas}"/>
+							</p:column>
+					</p:dataTable>
+			</h:form>
+		 -->
+</ui:define>
+<ui:define name="footer"></ui:define>
+</ui:composition>
+
+
+
+
+

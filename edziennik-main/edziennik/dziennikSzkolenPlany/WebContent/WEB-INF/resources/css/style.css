@@ -1,0 +1,132 @@
+@charset "UTF-8";
+
+.wpisujacy {
+	background: #bc8841 !important;
+	border: 1px solid gray !important
+}
+
+.wszyscy {
+	background: #73b578 !important;
+	border: 1px solid gray !important
+}
+.shadow{ box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.03);}
+.shadow-sm{ box-shadow: 0px 0px 4px rgba(0,0,0,0.12);}  
+div .timeline-event {
+	background: #0080c0 none !important;
+	border-color: #005782 !important;
+}
+
+div .timeline-event-content {
+	padding: 0px !important;
+}
+
+div .timelineKomp1 {
+	background: #c47b73 none !important;
+	border-color: #944941 !important;
+}
+
+div .timelineKomp2 {
+	background: #8080c0 none !important;
+	border-color: #4f4f9d !important;
+}
+
+div .timelineKomp3 {
+	background: #59a446 none !important;
+	border-color: #417733 !important;
+}
+
+div .timelineKomp4 {
+	background: #938f0b none !important;
+	border-color: #5e5b06 !important;
+}
+
+div .timelineKomp5 {
+	background: #3182c4 none !important;
+	border-color: #246193 !important;
+}
+
+div .timelineKomp6 {
+	background: #c28dcf none !important;
+	border-color: #9346a6 !important;
+}
+
+div .timelineKomp7 {
+	background: #e2363a none !important;
+	border-color: #c51d21 !important;
+}
+
+div .timelineKomp8 {
+	background: #8d8d8d none !important;
+	border-color: #5d5d5d !important;
+}
+
+div .timelineKomp9 {
+	background: #804040 none !important;
+	border-color: #623131 !important;
+}
+
+div .timelineKomp10 {
+	background: #808040 none !important;
+	border-color: #56562c !important;
+}
+
+.ui-inputgroup {
+	display: inline-block !important
+}
+
+
+.monthYearOnly .ui-datepicker-calendar {
+	display: none;
+}
+
+.buttDelete {
+	background: none !important;
+	color: #b00000 !important;
+	border: none !important;
+	padding: 0px !important;
+	margin: 0px !important;
+}
+
+.rowWszystkie {
+	color: #770000;
+	background: #f2fbff;
+}
+
+.dtPlanKalk .ui-expanded-row {
+	background: #f1f1e4 !important
+}
+
+.dtPlanKalk .ui-expanded-row-content {
+	background: #f9f9f2 !important
+}
+
+.ui-inputgroup {
+	margin: 2px !important
+}
+
+.tdWyrozniony {
+	background: #ffeece
+}
+
+.panelGridProsty td {
+	border: none !important;
+}
+
+.panelGridProsty {
+	display: inline-block;
+	overflow: auto
+}
+
+.analizaWyklPane .ui-panel-titlebar {
+	border: none
+}
+
+.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-icon {
+	color: #008040 !important;
+	right: 20px !important;
+	top: 12px !important;
+}
+
+.ui-selectonemenu-panel .ui-selectonemenu-filter-container input {
+	border: 1px solid #0080c0;
+}

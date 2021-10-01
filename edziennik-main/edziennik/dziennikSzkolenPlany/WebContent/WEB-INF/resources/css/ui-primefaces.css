@@ -1,0 +1,15 @@
+@charset "UTF-8";
+.ui-widget-content .ui-state-highlight {
+background-color: #598A96 !important;
+border: inherit !important;
+}
+
+.ui-state-highlight {
+background-color: #598A96 !important;
+}
+
+/*Style for Selected Rows*/
+.ui-datatable TR.ui-state-highlight {
+background-color: #598A96 !important;
+border: inherit !important;
+}

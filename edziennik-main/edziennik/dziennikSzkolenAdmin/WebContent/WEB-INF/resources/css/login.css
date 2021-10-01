@@ -1,0 +1,53 @@
+@charset "UTF-8";
+html body{
+background:#cad5db;
+width:100%;
+margin:0;
+padding:0
+		}
+
+.headerPanel{
+		background:#658494;
+		padding:25px;
+		color:white;
+		font-size:larger
+		}
+.ui-panel-titlebar {
+			 background:#658494!important;
+			 color:whitesmoke;
+			 text-shadow:none!important;
+			 font-family:times;
+		   	text-align:left;
+				}
+				
+.ui-panel{
+				border:none!important;
+				box-shadow: 2px 2px 14px rgba(0,0,0,0.22);
+				}
+				
+.panelogin{
+		 margin:auto;
+		 margin-top:10%;
+		 width:450px;
+		 }
+		 .fl{
+		 font-size:large!important;
+		 }
+		 @media screen and (max-width: 700px) {
+		 .panelogin{
+		 width:80vw;
+		 }
+		 }
+		button{
+			font-family:times!important;
+			width:100%;
+			margin:auto;
+			margin-top:15px;
+			padding:5px!important;
+			background:#658494!important;
+			border:3px solid #d0dadf!important}
+			
+			button:hover{
+			background:#64b5f6!important;
+			border:3px solid #64b5f6!important}
+			

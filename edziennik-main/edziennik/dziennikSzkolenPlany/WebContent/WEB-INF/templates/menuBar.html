@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<div class="sidebar shadow" id="mySidebar">
+	<div class="sidebarContent">
+	<p:link class="fa fa-user" value=" Wyloguj"   outcome="/index.xhtml"   title="Wyloguj" style="color:coral"/>
+    				<p:link  value=" Terminarz" outcome="/terminarz/terminarz.xhtml"  title="Terminarz"  class="#{param.i==2?'active bord-none':''} fa fa-calendar-alt" >
+			   		 				<f:param name="i" value="2" />
+					 </p:link>
+  					<p:link  value=" Szkolenia" outcome="/szkoleniaLine/szkolenia.xhtml"  title="Szkolenia"  class="#{param.i==3?'active bord-none':''} fa fa-chalkboard-teacher" >
+			   		 				<f:param name="i" value="3" />
+					 </p:link>
+
+ <p:accordionPanel class="shadow-sm" style="width:98%;margin:auto;"> 
+        <p:tab title=" Kreator" >
+   		 	<p:link  value=" Oddziały" outcome="/planowanie/planyZakladow/zaklady.xhtml" 
+   		 			rendered="#{poziomUprawnien==1 or poziomUprawnien==4 or poziomUprawnien==6}"
+   		 			 title="Oddziały" class="fa fa-book-reader">
+			   		 				<f:param name="i" value="4" />
+			</p:link>
+			<p:link  value=" Kadra" outcome="/planowanie/planyZakladow/wykladowcy.xhtml"  title="Kadra" class="fa fa-graduation-cap">
+			   		 				<f:param name="i" value="5" />
+			</p:link>
+			<p:link  value=" Przegląd" outcome="/planowanie/planyZakladow/podsumowanie.xhtml"  title="Przegląd" class="fa fa-hands">
+			   		 				<f:param name="i" value="6" />
+			</p:link>
+        </p:tab>
+    </p:accordionPanel>
+   
+</div>
+  <div style="height: 100px;clear:both"></div>
+</div>
+  <div class="topnav" id="myTopnav">
+      <a href="javascript:void(0);" class="iconSecond" onclick="closeOpenNav()" style="display:inline-block;background:#0097A7">
+  		  <i class="fa fa-bars"></i>
+  	</a>
+  	<p:link  value="Start" outcome="/start/start.xhtml" class="first"  title="Start" style="width:167px;background:#0097A7">
+			   	<f:param name="i" value="1" />
+	 </p:link>
+  <a href="javascript:void(0);" class="icon" style="display:none!important" onclick="myFunction()">
+    <i class="fa fa-bars"></i>
+  </a>
+</div>
+
+
+</ui:composition>
+
+<!-- 
+	<h:form>
+		<p:growl id="messages" />
+		<p:menubar styleClass="headerMenuBar">
+			<p:menuitem icon="fa fa-home" value=" Start "
+				url="/dziennikSzkolenPlany//start/start.xhtml"
+				style="font-weight:bold;margin-left:3px" />
+			<p:menuitem icon="fa fa-calendar-check" value="Terminarz "
+				url="/dziennikSzkolenPlany/terminarz/terminarz.xhtml" />
+			<p:menuitem icon="fa fa-id-badge" value=" Szkolenia "
+				url="/dziennikSzkolenPlany//szkoleniaLine/szkolenia.xhtml" />
+			<p:submenu label="Planowanie" icon="fa fa-map">
+				<p:submenu label="K R E A T O R">
+					<p:menuitem value=" Oddziały"
+						url="/dziennikSzkolenPlany//planowanie/planyZakladow/zaklady.xhtml" icon="fa fa-boxes" />
+					<p:menuitem value=" Wykładowcy"
+						url="/dziennikSzkolenPlany//planowanie/planyZakladow/wykladowcy.xhtml"
+						icon="fa fa-chalkboard-teacher" />
+					<p:menuitem value=" Podsumowanie"
+						url="/dziennikSzkolenPlany//planowanie/planyZakladow/podsumowanie.xhtml"
+						icon="fa fa-calculator" />
+					<p:separator />
+					<p:menuitem value="PUBLICKACJA"
+						url="/dziennikSzkolenPlany//planowanie/planyZakladow/publikacja.xhtml"
+						icon="fa fa-stopwatch" />
+				</p:submenu>
+			</p:submenu>
+			<p:submenu label="Pomoc" icon="fa fa-comments">
+				<p:menuitem value="Instrukcja" url="#" />
+			</p:submenu>
+		</p:menubar>
+		<p:menubar styleClass="headerMenuBar"
+			style="float:right;background:none;font-size:19px!important">
+			<p:menuitem action="#{logowanie.logout}" icon="fa fa-sign-out-alt"/>
+		</p:menubar>
+		<div style="clear: both"></div>
+	</h:form>
+ -->

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title><ui:insert name="title">eDziennik</ui:insert></title>
+	<h:outputStylesheet name="css/datePicker.css" />
+	<h:outputStylesheet name="css/topNav.css?92112" />
+	<h:outputStylesheet name="css/buttons.css?93433" />
+	<h:outputStylesheet name="css/sidenav.css?9" />
+	<h:outputStylesheet library="font-awesome" name="css/all.css" />
+	<h:outputStylesheet name="css/planZajec.css" />
+		<h:outputStylesheet name="css/style.css?470" />
+		<h:outputStylesheet name="css/ui_primefaces.css?9127" />
+		<h:outputStylesheet name="css/universal.css?972" />
+		<h:outputStylesheet name="css/BasicTemplate.css?5332" />
+	<h:outputScript library="js" name="logoutTimeout.js?23" />
+	<h:outputScript library="js" name="pl.js?33333" />
+	<h:outputScript library="js" name="plT.js?777" />
+</h:head>
+
+<h:body onload="StartTimers();" onmousemove="ResetTimers();">
+
+<p:layout  fullPage="true">
+		<div id="timeout" class="shadow">
+			    <h2>Wylogowanie!</h2>
+			    <p>Za minutę system automatycznie wyloguje uzytkownika<br />
+			     Rusz kursorem aby temu zapobiec.</p>
+		</div>
+	
+	<div id="mySidenav" class="sidenav shadow">
+			 <div  style="height:40px;border:none;padding:5px;text-align:right;background:#e2e2e2"> 
+			 <a href="javascript:void(0)" class="closebtn fa fa-window-close" onclick="closeNav()"></a>
+			
+			 </div> <div style="clear:both"></div>
+			      <div class="gradient-btn btn-blue shadow" onclick="window.open('http://webmeeting.uc.ost112.gov.pl','webex', 'toolbar=no,scrollbars=yes,resizable=yes,top=50,left=400,width=800,height=600')">
+       					<i  class="fa fa-video"> </i>
+      				 <span> W e b e x</span>
+   				 </div>   				 
+			    <div class="gradient-btn btn-red shadow" onclick="window.open('#{videojt.myHashVideo}','jitsi', 'toolbar=no,scrollbars=yes,resizable=yes,top=50,left=400,width=800,height=600')">
+       					<i  class="fa fa-video"> </i>
+      				 <span> J i t s i</span>
+   				 </div>
+   				     <div class="gradient-btn btn-green shadow" onclick="window.open('https://10.73.2.49:5001/sharing/vc15fOPHP','materialy', 'toolbar=no,scrollbars=yes,resizable=yes,top=50,left=400,width=800,height=600')">
+       					<i  class="fa fa-file"> </i>
+      				 <span> Materiały</span>
+   				 </div>
+			<div style="clear:both"></div>
+			  
+
+  <p:accordionPanel activeIndex="null" class="shadow">
+        <p:tab title="Administracja" >
+            <h:panelGrid columns="2" cellpadding="10" >
+               <p:link outcome="/administracja/konto.xhtml" value="Konto">
+    						<f:param name="i" value="10" />
+						    <f:param name="subPage" value="administracja" />
+				</p:link>
+            </h:panelGrid>
+        </p:tab>
+           <p:tab title="Więcej" rendered="#{logowanie.poziomUprawnien!='7'}">
+            <h:panelGrid columns="2" cellpadding="10">
+               <p:link outcome="/administracja/pensum.xhtml" value="Pensum">
+    					   <f:param name="i" value="10" />
+						    <f:param name="subPage" value="pensum" />
+				</p:link>
+            </h:panelGrid>
+        </p:tab>
+         </p:accordionPanel>
+</div>
+<div id="main">
+  <ui:include src="menuBar.html" />
+  				<h:form id="glownyForm" method="post">
+								<div class="centerUnitTopMenu shadow" style="background:whitesmoke;overflow:auto;white-space: nowrap;">
+										<ui:insert name="subMenuCont"></ui:insert>
+										<ui:insert name="grupaSzkol"></ui:insert>
+										<ui:insert name="grupaSzkolKal"></ui:insert>
+										<ui:insert name="jmJs"></ui:insert>
+										<div style="clear:both"></div>			
+								</div>
+				</h:form>
+    <div class="row  wrapper">
+        <div class="col-12">			
+        		<div class="p-10 main">		
+	                  <ui:insert name="content">
+									<h:outputText value="Strona w budowie" />
+					 </ui:insert>
+				</div>
+         </div>
+    </div>
+            </div>   
+ <div class="footer bg-secondary shadow">
+ 	<div class="row" style="margin:auto">
+ 	<div class="col-3" style="">
+ 		<span class="fa fa-chalkboard" style="font-size:100px; color:lightgray;padding:50px"></span>
+ 	</div>
+ 			<div class="col-3">
+ 					<div class="p-10">
+ 						<h3>Narzędzia</h3>
+ 					<ul>
+ 						<li onclick="window.open('http://webmeeting.uc.ost112.gov.pl','webex', 'toolbar=no,scrollbars=yes,resizable=yes,top=50,left=400,width=800,height=600')">Webex</li>
+ 						<li onclick="window.open('#{videojt.myHashVideo}','jitsi', 'toolbar=no,scrollbars=yes,resizable=yes,top=50,left=400,width=800,height=600')">Jitsi</li>
+ 						<li onclick="window.open('https://10.73.2.49:5001/sharing/vc15fOPHP','materialy', 'toolbar=no,scrollbars=yes,resizable=yes,top=50,left=400,width=800,height=600')">Materiały</li>
+ 					</ul>
+ 					
+ 					</div>
+ 			</div>
+ 			<div class="col-3">
+ 			<div class="p-10">
+ 			<h3>Zajęcia</h3>
+ 			<ul>
+ 				<li>
+ 					<p:link outcome="/zajecia/frekwencja.xhtml" value="Zajęcia"  title="Zajęcia">
+			   			<f:param name="i" value="2" />
+		        	<f:param name="subPage" value="frekwencja" />
+			 		</p:link>
+ 				</li>
+ 				<li>
+	 				<p:link outcome="/zajecia/tematy.xhtml" value="Tematy"  title="Tematy">
+				   			<f:param name="i" value="2" />
+			        	<f:param name="subPage" value="tematy" />
+				 	</p:link>
+ 				</li>
+ 				<li>
+ 					<p:link outcome="/zajecia/oceny.xhtml" 	value="Oceny"  title="Oceny">
+			   			<f:param name="i" value="2" />
+		        	<f:param name="subPage" value="oceny" />
+			 		</p:link>
+ 				</li>
+ 			</ul>
+ 			</div>
+ 			</div>
+ 			<div class="col-3">
+ 			<div class="p-10">
+ 				<h3>Inne</h3>
+ 			<ul>
+ 				<li><a href="/dziennikSzkolen/planZajec/planZajec.xhtml?i=3">Godziny zajęć</a></li>
+ 				<li >
+ 					<p:link outcome="/start/terminarz.xhtml" value="Terminarz"  title="Icon Only">
+			   			  <f:param name="i" value="0" />
+					</p:link>
+ 				</li>
+ 				<li>
+ 					<p:link outcome="/wiadomosci/odebraneKadra.xhtml" rendered="#{logowanie.poziomUprawnien!='7'}" 
+              				value="Wiadomości"  title="Wiadomości">
+			   			 <f:param name="i" value="1" />
+			   			 <f:param name="productId" value="10" />
+			 		</p:link>
+              <p:link class="#{param.i==4?'active bord-none':''}" outcome="/wiadomosci/odebraneSluchacz.xhtml" rendered="#{logowanie.poziomUprawnien=='7'}" 
+              value="Wiadomości"  title="Wiadomości">
+			   			 <f:param name="i" value="4" />
+			   			 <f:param name="productId" value="10" />
+			 </p:link>
+ 				</li>
+ 			</ul>
+ 			</div>
+ 			</div>
+ 	</div>
+ </div>
+</p:layout>
+<script>
+function openNav() {
+  document.getElementById("mySidenav").style.width = "250px";
+  //document.getElementById("openSidenavButt").style.display="none";
+}
+
+function closeNav() {
+ // document.getElementById("openSidenavButt").style.display="block";
+  document.getElementById("mySidenav").style.width = "0";
+}
+</script>
+</h:body>
+</html>

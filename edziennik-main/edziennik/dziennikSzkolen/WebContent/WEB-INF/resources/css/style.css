@@ -1,0 +1,169 @@
+@charset "UTF-8";
+
+.panelUsers {background: white;margin: auto;width: 97%;text-align: center;}
+.tableUniv td{padding:0px}
+.tableUniv *{font-family:times}
+.checkObTh tbody tr:hover td{background:none !important;cursor:pointer}
+.panelGridUniv td{border:none!important}
+.zablokowanyRow{background-color:#e9c18d;}
+.datPick{background-color:orange !important;}
+.dialogUniv{background:green !important;}
+.dialogLoad{background:none!important;border:none!important;box-shadow:none!important;}
+.wpisujacy{background: #8d6e63!important;border:1px solid #745a52!important}
+.wszyscy{background: #43a047!important;border: 1px solid #337936!important}
+.pluton{background: #009688!important;border: 1px solid #00776b!important}
+.swED td,.swED,.swED tr{padding:0px;}
+.calWyrozniony input{border:1px solid #ffa6a6!important;}
+.tableGodzTh{font-size:19px !important}
+.ocenyRowExt {background:red!important}
+.renderInput{
+width:45px !important;
+text-align:center;
+margin:auto;
+display:none;
+padding:0px !important;
+height:20px !important;
+border:1px solid #a4a4a4!important;
+}
+.ocKolumnaFoot{border:none!important;font-weight:normal;}
+.ocKolumnaFoot td{border:none!important;text-align:left;}
+.classSp,.classNb,.classOb{padding:1px;padding-left:5px;padding-right:5px;border-radius:2px;cursor:pointer;width:30px;display:inline}
+.classSp{background:#e7e8b7;border:1px solid #b4b467}
+.classNb{background:#fef5eb;border:1px solid #ff8000}
+.classNbRow{background:#fdfee0;border:1px solid #ff8000}
+.classOb{background:whitesmoke;border:1px solid lightgray}
+.colObSpr{ background:whitesmoke !important}
+.colObNspr{background:red}
+.jqplot-series-canvas{opacity:0.7}
+.jqplot-table-legend {padding-top:0.5em !important}
+.tableObecnoscList .ui-widget-header {background:#efefef!important; color:#400040}
+.tableObecnoscList{border:1px solid white!important;text-align:center!important}
+.tableObecnoscListNb .ui-widget-header {background:beige!important; color:#400040}
+.tableObecnoscListNb{border:1px solid orange}
+.tableObecnoscListUsp .ui-widget-header {background:#bbddff!important; color:#400040}
+.tableObecnoscListUsp{border:1px solid #93c9ff}
+.tableObecnoscListSp .ui-widget-header {background:beige!important; color:#400040}
+.tableObecnoscListSp{border:1px solid #b6b66d}
+.obecnoscListTable td{font-family:times !important}
+.obecnoscListTable .ui-panelgrid .ui-panelgrid-cell{border:none !important;vertical-align:top}
+.obecnoscListTable .ui-button-text{padding:0px !important}
+.tableObecnoscListNb, .tableObecnoscListUsp, .tableObecnoscListSp{text-align:center !important}
+.dialogWin .ui-widget-header {}
+.dialogWin .ui-widget-header td{border:none!important}
+.without-selectall .ui-selectcheckboxmenu-header .ui-chkbox{display:none;}
+.without-selectall{width:140px!important;box-sizing:border-box!important}
+.calendar input{text-align:center!important;background:#f0f0e1!important;border:1px solid red!important}
+.buttOnlyIcon,.dtTematy .ui-row-editor{
+	background:whitesmoke!important;
+	color:#4992b8!important;
+	border:1px solid #c4c4c4!important;
+	height:20px!important;
+	border-radius:3px}
+.buttOnlyIcon{height:23px!important}
+.dtTematy .ui-row-editor .ui-icon{margin-top:3px!important;}
+.buttOnlyIcon .ui-icon{margin-left:-10px!important}
+.dtTematy .ui-row-editing .ui-icon{color:white!important}
+.dtTematy .ui-row-editing .ui-row-editor,.dtTematy .ui-row-editing .buttOnlyIcon{
+	background:#0080c0!important;
+	color:#008000!important;
+	border:1px solid #aaaaaa!important;
+	transition:background-color 0.5s ease!important}
+.ui-row-editing input,.dtTematy .ui-row-editing textarea,.dtTematy .ui-row-editing select{
+	background:whitesmoke!important;
+	width:85%!important;
+	margin:2px!important}
+.dtTematy .ui-autocomplete input{border-radius:3px;border:1px solid gray}
+.dtTematy .ui-autocomplete{display:block!important}
+.dtTematy .ui-cell-editor-input .ui-autocomplete-multiple ul{
+	background:#9bc8dd!important;
+	width:95%!important;
+	margin:auto!important;
+	margin-top:10px!important;
+	margin-bottom:10px!important
+	}
+
+.preformated{white-space:pre-wrap!important;}
+.buttSplit .ui-state-hover .ui-button-text{background:#256b96!important;}
+.frekwencja .ui-button, .tematy .ui-button, .oceny .ui-button{background:#26719d!important}
+.pGridTable .ui-widget-header {
+text-align:center;
+font-weight:bold;
+font-family:times;
+}
+.usunietyRow{background:#e7f3f5;
+color:gray;
+min-width:50px;
+}
+
+.pGridTable{text-align:center!important;width:95%;margin:auto}
+.infoOnPage{background:#fff0d5;text-align:center;margin:5%;padding:20px!important;border:1px solid #ff8000!important}
+.ocenyWrapper .ui-widget-header{
+	background:#80aad5!important;
+	padding:0px!important;
+	height:35px;
+}
+.ocenyWrapper{
+	background:whitesmoke;
+	border:1px solid #c9c9c9!important;
+	border-radius:3px;
+	padding:1px;
+}
+.ui-panel{background:none}
+.headerLoguj{background:white;text-align:center}
+.przedmiotyStrukturaKursu .ui-datatable-header{background:#d9dfe8!important;color:gray!important}
+.buttDelete{background:none!important;color:#b00000!important;border:none!important;padding:0px!important;margin:0px!important;}
+.scheduleTerminarz{
+	padding:5px;
+}
+.scheduleTerminarz .fc-today {background:#f4fbfb!important;border:1px solid #f4fbfb;color:#00796b!important;font-weight:bold;font-size:larger}
+.imieNazwiskoSluchacz{
+	width:200px;
+}
+.scheduleTerminarz .fc-center{
+	margin-top:5px;
+}
+
+.scheduleTerminarz .fc-center{
+	position:absolute;
+	top:66px;
+	left:20px;
+	font-size:10px;
+}
+.tdResponsive{
+	width:100%;
+}
+@media only screen and (max-width: 700px) {
+.main{
+	font-size:smaller!important;
+}	
+
+.fc-right .fc-button-group .fc-month-button{
+	display:block;
+}
+
+.ui-dialog .ui-dialog-content *{
+	font-size:large!important;
+}
+.ui-button .fa{
+	margin-top:-5px!important;
+}
+.ui-dialog{
+	width:98vw!important;
+	margin:auto!important;
+}
+.imieNazwiskoSluchacz{
+	width:90px;
+}
+.tdResponsive{
+	width:100px;
+	}
+}
+
+.ui-datatable .ui-datatable-even:hover td{background:whitesmoke!important;}
+.ui-datatable .ui-datatable-odd:hover td{background:whitesmoke!important;}
+.ui-datatable .ui-state-highlight:hover td{background:#6395c7!important;}
+
+.wiadomosciNieprzeczytane{color:#bf00bf;font-weight:bold;}
+.wiadomosciPrzeczytane{color:gray;font-weight:normal;}
+
+

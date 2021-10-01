@@ -1,0 +1,44 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" >
+
+	<h:head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<h:outputStylesheet name="css/universal.css?2" />
+		<h:outputStylesheet name="css/login.css?77334243" />
+		<h:outputStylesheet name="css/buttons.css?1" />
+			
+			#{logowanie.logoutStart()} 
+	
+	</h:head>
+<h:body >  
+<div style="background:#64b5f6;padding:25px;color:white;font-size:larger" class="shadow">
+<h:outputText value="Dziennik zajęć" />
+</div>
+
+							<h:form autocomplete="off" id="myform" >
+									<p:panel id="panelFormLogowanie" header="Witam"  class="panelogin shadow text-center bg-light">
+									<p:messages id="msgs"/>
+										<h:panelGrid columns="3" cellpadding="5">
+											<p:outputLabel for="login" value="Login" class="fl"/>
+											<p:inputText id="login" value="#{logowanie.login}" class="fl" autocomplete="off" required="true" style="width:100%;padding:5px"/>
+												<p:message for="login" display="icon" var="msgs"/>
+											<p:outputLabel for="input_password" value="Hasło" class="fl"/>
+											<p:password  id="input_password" value="#{logowanie.haslo}" class="fl" autocomplete="one-time-code" required="true" style="width:100%;padding:5px"/>
+											<p:message for="input_password" display="icon"/>
+										</h:panelGrid>
+										<p:commandButton update="panelFormLogowanie" class="shadow fl" action="#{logowanie.logowanieValidate}"  value="Zaloguj"  />
+									</p:panel>
+							</h:form>
+							
+</h:body>
+	
+		
+
+	
+</html>

@@ -1,0 +1,99 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/BasicTemplate.html">
+	
+	<ui:define name="content" > 
+		<p:outputPanel deferred="true" id="contentTrescZajecia">
+		
+						<div class="ui-fluid">
+						    <div class="ui-g-12 ui-md-12 ui-lg-2 shadow" style="background:whitesmoke;z-index:1">
+								<ui:include src="/WEB-INF/templates/wiadomosciLeftPanelSluchacz.html"/>			
+						    </div>
+						    <div class="ui-g-12 ui-md-12 ui-lg-10 ui-g-nopad bg-white shadow"  style="min-height: 100vh;padding:20px">
+										<h3 class="first">Odebrane wiadomości indywidualne </h3>
+										<h:form>
+										   <p:dataTable id="wiadomosciTable" var="wysw" value="#{odebraneSluchacz.sluchaczZalogowany.sluchacze.wiadomosciSluchaczOdbiorca}" sortBy="#{wysw.dataWpisu}"
+										    rowsPerPageTemplate="20,50,100" rows="20" sortFunction="#{odebraneSluchacz.sortByDate}"
+										     paginator="true" tableStyle="width:auto!important"
+										     currentPageReportTemplate="{startRecord}-{endRecord} z {totalRecords} wiadomości"
+										     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+										     rowStyleClass="#{wysw.dataWpisu > logowanie.ostatnieLogowanie ? 'wiadomosciNieprzeczytane' : 'wiadomosciPrzeczytane'}">
+										         <p:column style="width:17px">
+           												 <p:rowToggler />
+       											 </p:column>
+										        <p:column headerText="Data" footerText="Data" style="width:15%" sortBy="#{wysw.dataWpisu}" 
+										        filterBy="#{wysw.dataWpisu}" priority="3">
+										            <h:outputText value="#{wysw.dataWpisu}">
+										             <f:convertDateTime  type="date" pattern="yyyy-MM-dd HH:mm"/>
+										             </h:outputText>
+										        </p:column>
+										         <p:column headerText="Kto" footerText="Kto" sortBy="#{wysw.user.nazwiskoUsers} #{wysw.user.imieUsers}" 
+										         filterBy="#{wysw.user.nazwiskoUsers} #{wysw.user.imieUsers}" style="width:30%">
+										            <h:outputText value="#{wysw.user.nazwiskoUsers} #{wysw.user.imieUsers}" />
+										        </p:column>
+										            <p:column headerText="Temat" footerText="Temat" sortBy="#{wysw.tytul}" filterBy="#{wysw.tytul}">
+										                <h:outputText value="#{wysw.tytul}" />
+										            </p:column>
+										  		 <p:rowExpansion class="shadow">
+											                <h:outputText value="#{wysw.tresc}" escape="false"/>
+											                    <div style="width:100%;text-align:right;font-size:smaller;font-style:italic">
+											                      	 <h:outputText value="#{wysw.user.nazwiskoUsers} #{wysw.user.imieUsers} "/>
+										  		           		         <h:outputText value="#{wysw.dataWpisu}">
+										             							<f:convertDateTime  type="date" pattern="yyyy-MM-dd HH:mm"/>
+										           					  </h:outputText>
+										  		           	    </div>
+											       </p:rowExpansion>
+										    </p:dataTable>
+										    <p:blockUI block="wiadomosciTable" trigger="wiadomosciTable" /> 
+										</h:form>
+										
+										<h3 class="first">Odebrane wiadomości grupowe (plutonu)</h3>
+										<h:form>
+										  <p:dataTable var="wysw" value="#{odebraneSluchacz.sluchaczZalogowany.sluchacze.pluton.wiadomoscis}" sortBy="#{wysw.dataWpisu}"
+										    rowsPerPageTemplate="20,50,100" rows="20" sortFunction="#{odebraneSluchacz.sortByDate}"
+										     paginator="true" tableStyle="width:auto!important"
+										     currentPageReportTemplate="{startRecord}-{endRecord} z {totalRecords} wiadomości"
+										     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+										     rowStyleClass="#{wysw.dataWpisu > logowanie.ostatnieLogowanie ? 'wiadomosciNieprzeczytane' : 'wiadomosciPrzeczytane'}">
+										         <p:column style="width:35px">
+           												 <p:rowToggler />
+       											 </p:column>
+										        <p:column headerText="Data" footerText="Data" style="width:15%" sortBy="#{wysw.dataWpisu}" 
+										        filterBy="#{wysw.dataWpisu}" priority="3">
+										            <h:outputText value="#{wysw.dataWpisu}">
+										             <f:convertDateTime  type="date" pattern="yyyy-MM-dd HH:mm"/>
+										             </h:outputText>
+										        </p:column>
+										         <p:column headerText="Kto" footerText="Kto" sortBy="#{wysw.user.nazwiskoUsers} #{wysw.user.imieUsers}" 
+										         filterBy="#{wysw.user.nazwiskoUsers} #{wysw.user.imieUsers}" style="width:30%">
+										            <h:outputText value="#{wysw.user.nazwiskoUsers} #{wysw.user.imieUsers}" />
+										        </p:column>
+										            <p:column headerText="Temat" footerText="Temat" sortBy="#{wysw.tytul}" filterBy="#{wysw.tytul}" style="font-weight:bold">
+										                <h:outputText value="#{wysw.tytul}" />
+										            </p:column>
+										  		 <p:rowExpansion class="shadow">
+											                <h:outputText value="#{wysw.tresc}" escape="false"/>
+											                   <div style="width:100%;text-align:right;font-size:smaller;font-style:italic">
+											                      	 <h:outputText value="#{wysw.user.nazwiskoUsers} #{wysw.user.imieUsers} "/>
+										  		           		         <h:outputText value="#{wysw.dataWpisu}">
+										             							<f:convertDateTime  type="date" pattern="yyyy-MM-dd HH:mm"/>
+										           					  </h:outputText>
+										  		           	    </div>
+											       </p:rowExpansion>
+										    </p:dataTable>
+										  
+										</h:form>
+						    </div>
+						    <div style="clear:both"></div>
+					</div>
+			<div style="clear:both"></div>
+		
+	</p:outputPanel>
+ </ui:define>
+<ui:define name="footer"></ui:define>
+</ui:composition>

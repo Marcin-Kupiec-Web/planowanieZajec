@@ -1,0 +1,51 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" >
+	
+
+    <p:growl id="messages" />
+    <h:panelGrid columns="3" styleClass="subMenuCont">
+		    <p:splitButton value="Frekwencja" action="#{frekwencja.frekwencjaStart}"  icon="ui-icon-person" 
+		    			styleClass="buttSplit #{param.subPage eq 'frekwencja'?'frekwencja':null} " 
+		    			update="messages" rendered="#{logowanie.poziomUprawnien le 4 or (logowanie.poziomUprawnien=='7')}">
+		        <p:menuitem value="Statystyka" outcome="/zajecia/frekwencjaStatystyka.xhtml"  icon="ui-icon-calculator" style="width:170px" >
+		        	<f:param name="i" value="2" />
+		        	<f:param name="subPage" value="frekwencja" />
+		        </p:menuitem>
+		        <p:menuitem value="Lista" outcome="/zajecia/frekwencjaLista.xhtml"  icon="ui-icon-tag"  rendered="#{logowanie.poziomUprawnien!='7'}">
+		        <f:param name="i" value="2" />
+		        <f:param name="subPage" value="frekwencja" />
+		        </p:menuitem>
+		         <p:menuitem value="Wyszukiwarka" outcome="/zajecia/frekwencjaWyszukiwarka.xhtml"  icon="ui-icon-search"  
+		         		rendered="#{logowanie.poziomUprawnien!='7'}">
+		        <f:param name="i" value="2" />
+		        <f:param name="subPage" value="frekwencja" />
+		        </p:menuitem>
+		    </p:splitButton>
+		     <p:splitButton value="Tematy" action="#{tematyServ.tematyStart}"  icon="ui-icon-link" styleClass="buttSplit #{param.subPage eq 'tematy'?'tematy':null}">
+		        <p:menuitem value="Statystyka" outcome="/zajecia/tematyStatystyka.xhtml"  icon="ui-icon-calculator" style="width:170px" >
+		        	<f:param name="i" value="2" />
+		        	<f:param name="subPage" value="tematy" />
+		        </p:menuitem>
+		        <p:menuitem value="Wyszukiwarka" outcome="/zajecia/tematyLista.xhtml" icon="ui-icon-search">
+		       		 <f:param name="i" value="2" />
+		        	<f:param name="subPage" value="tematy" />
+		        </p:menuitem>
+		    </p:splitButton>
+		     <p:splitButton value="Oceny" action="#{oceny.ocenyStart}"  icon="ui-icon-pencil" 
+		     				styleClass="buttSplit #{param.subPage eq 'oceny'?'oceny':null}"
+		     				rendered="#{logowanie.poziomUprawnien le 4 or (logowanie.poziomUprawnien=='7')}">
+		         <p:menuitem value="Statystyka" outcome="/zajecia/ocenyStatystyka.xhtml"  icon="ui-icon-calculator" style="width:170px" >
+		        	<f:param name="i" value="2" />
+		        	<f:param name="subPage" value="oceny" />
+		        </p:menuitem>
+		  	   <p:menuitem value="Wyszukiwarka" outcome="/zajecia/ocenyWyszukiwarka.xhtml" icon="ui-icon-search">
+		   		    <f:param name="i" value="2" />
+		   		   <f:param name="subPage" value="oceny" />
+		     </p:menuitem>
+		    </p:splitButton>
+    </h:panelGrid>
+
+</ui:composition>		

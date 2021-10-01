@@ -1,0 +1,35 @@
+@charset "UTF-8";
+
+.myCalendarLeftPane .ui-datepicker {
+	width: 95% !important;
+	margin:auto;
+	font-family:times;
+}
+.ui-datepicker{
+	background:whitesmoke;
+}
+.ui-datepicker .ui-datepicker-header{
+
+	
+}
+.ui-datepicker .ui-datepicker-week-end{
+	background:#c5e2e2!important;
+	color:black!important;
+}
+.ui-datepicker-current{
+	position:relative;
+	top:-20px;
+}
+.ui-datepicker-buttonpane{
+	background:whitesmoke;
+}
+
+/*
+class="ui-datepicker-week-end"
+class="ui-datepicker-week-end"
+class=" ui-datepicker-week-end " 
+class="ui-state-default" 
+class=" ui-datepicker-days-cell-over  ui-datepicker-current-day ui-datepicker-today" 
+class=" ui-datepicker-week-end "
+class=" ui-datepicker-week-end ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled"
+*/

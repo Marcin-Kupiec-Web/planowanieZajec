@@ -1,0 +1,29 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" >
+	
+<h:panelGrid columns="6" id="grupaGet" styleClass="subMenuCont" rendered="#{logowanie.poziomUprawnien!='7'}">
+			<p:outputLabel for="kompania" value="Komp. "  class="align-bottom"/>
+					    <p:selectOneMenu id="kompania" value="#{wyborPlutonu.kompaniaWybrana}" lazy="false" panelStyle="width:100px" style="min-width:40px">
+							    <p:ajax event="change" listener="#{wyborPlutonu.changeKompania}" update="contentOutputPanel,grupaGet,@([id$=wyborPrzedmiotu])" />
+							    	<f:selectItem itemLabel="wybierz" itemValue=""/>
+							         <f:selectItems value="#{wyborPlutonu.kompanieListNazwa}"/>
+					    </p:selectOneMenu>
+		    <p:outputLabel for="pluton" value="Plut. " class="align-bottom"/>
+					    <p:selectOneMenu id="pluton" value="#{wyborPlutonu.plutonWybrany}" lazy="false" panelStyle="width:100px" style="min-width:40px">
+								    <p:ajax event="change" listener="#{wyborPlutonu.changePluton}" update="contentOutputPanel,grupaGet,@([id$=wyborPrzedmiotu])"/>
+								    	<f:selectItem itemLabel="wybierz" itemValue=""/>
+								         <f:selectItems value="#{wyborPlutonu.plutonListNazwa}"/>
+					    </p:selectOneMenu>
+		     <p:outputLabel for="szkolenie" value="Szkol. "  class="align-bottom"/>
+					    <p:selectOneMenu id="szkolenie" value="#{wyborPlutonu.wybraneSzkolenie}" lazy="false" panelStyle="width:200px" style="min-width:70px">
+								      <ui:insert name="akcja"></ui:insert>
+								   		<f:selectItem itemLabel="wybierz" itemValue=""/>
+								         <f:selectItems value="#{wyborPlutonu.plutonListSzkolenie}"/>
+					    </p:selectOneMenu>
+					   
+			
+</h:panelGrid>
+</ui:composition>		

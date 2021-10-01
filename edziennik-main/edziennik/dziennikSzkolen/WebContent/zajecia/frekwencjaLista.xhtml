@@ -1,0 +1,152 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/BasicTemplate.html">
+	
+				<ui:define name="subMenuCont"><ui:include src="/WEB-INF/templates/zajecia/submenuZajecia.html"/></ui:define>
+				<ui:define name="grupaSzkol"><ui:include src="/WEB-INF/templates/zajecia/plutonWybor.html"/></ui:define>
+				<ui:define name="akcja">
+					<p:ajax event="change" listener="#{frekwencjaLista.init}" update="contentOutputPanel"/>
+				</ui:define>
+			
+	<div style="clear:both"></div>
+	<ui:define name="content"> 
+<p:panel id="contentTrescZajecia" >
+	<p:outputPanel deferred="true" id="contentOutputPanel" rendered="#{logowanie.poziomUprawnien le 4}">
+	<h:form id="form" rendered="#{wyborPlutonu.idPlutonWybrany>0}" >
+	<p:blockUI block="sluchaczeObecnoscLista" trigger="sluchaczeObecnoscLista" /> 
+	
+	<p:dataTable id="sluchaczeObecnoscLista" var="sluchaczeObecnosc" value="#{frekwencjaLista.sluchaczeSortedOb}" emptyMessage="Brak wyników" 
+	class="obecnoscListTable shadow" rowKey="#{sluchaczeObecnosc.idS}" rowExpandMode="single" 
+	style="text-align:center" >
+			<f:facet name="header"> Frekwencja (lista)
+			       		<h:commandLink value="xls" rendered="false">
+       						<p:dataExporter type="xls" target="sluchaczeObecnoscLista" fileName="obecnosci" />
+       					</h:commandLink>
+			</f:facet>
+					<p:ajax event="rowToggle" onstart="" listener="#{frekwencjaLista.clearAllFilters()}" />
+				<p:column style="width:17px;text-align:center" >
+					<p:rowToggler  />
+				</p:column>
+				<p:column style="width:30px">
+					<f:facet name="header">Nr.dz.</f:facet>
+						<h:outputText value="#{sluchaczeObecnosc.nrDziennik}" />
+				</p:column>
+				<p:column style="text-align:left;width:30%">
+					<f:facet name="header">Słuchacz</f:facet>
+						<h:outputText value="#{sluchaczeObecnosc.nazwiskoSluchacz} #{sluchaczeObecnosc.imieSluchacz}" />
+				</p:column>
+				<p:column style="text-align:center">
+					<f:facet name="header">Nieuspr.</f:facet>
+						<h:outputText value="#{sluchaczeObecnosc.obecnoscs.stream().filter(obecn->obecn.wartosc.equals('N')).count()}" style="font-size:larger;color:red" id="nup"/>
+				</p:column>
+				<p:column style="text-align:center">
+					<f:facet name="header">Uspr.</f:facet>
+						<h:outputText value="#{sluchaczeObecnosc.obecnoscs.stream().filter(obecn->(!obecn.wartosc.equals('N')) and (!obecn.wartosc.equals('Sp'))).count()}" style="font-size:larger;color:gray" id="uup"/>
+				</p:column>
+				<p:column  style="text-align:center">
+					<f:facet name="header">Spóz.</f:facet>
+						<h:outputText value="#{sluchaczeObecnosc.obecnoscs.stream().filter(obecn->obecn.wartosc.equals('Sp')).count()}" style="font-size:larger;color:green" id="sup"/>
+				</p:column>
+				<p:rowExpansion > 
+				
+					<p:dataTable id="dtObNb" widgetVar="dataTableWidget" var="obecnosc" value="#{sluchaczeObecnosc.obecnoscs}" 
+						selection="#{frekwencjaLista.selectedObecnosc}" rowKey="#{obecnosc.idObecnosc}" emptyMessage="Brak wyników" rowStyleClass="#{obecnosc.wartosc eq 'N'?'classNbRow':''}"
+						styleClass="tableObecnoscList" paginator="true" rows="10" 
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} #{sluchaczeObecnosc.obecnoscs.stream().count()==0?'':'{saveOb}'}" 
+				        currentPageReportTemplate="{startRecord}-{endRecord} z {totalRecords} wpisów"
+						rowsPerPageTemplate="10,20,50,100,150">
+						<p:ajax event="sort" update="@([id$=filtrCheck])" />
+						<f:facet name="header">#{sluchaczeObecnosc.nazwiskoSluchacz} #{sluchaczeObecnosc.imieSluchacz}: Nieobecności (#{sluchaczeObecnosc.obecnoscs.stream().count()})
+						 </f:facet>
+											<p:column selectionMode="multiple" style="width:40px" rendered="#{logowanie.poziomUprawnien==2 or (logowanie.poziomUprawnien==1)}">
+											</p:column>
+											 <p:column  headerText="Id" style="width:50px" sortBy="#{obecnosc.idObecnosc}" filterBy="#{obecnosc.idObecnosc}" 
+											 filterValue="#{frekwencjaLista.filterValues['idObecnosc']}" priority="3">
+											 		<h:outputText value="#{obecnosc.idObecnosc}" />
+											 </p:column>
+											  <p:column  filterBy="#{obecnosc.wartosc}" sortBy="#{obecnosc.wartosc}" style="width:60px;font-weight:bold;color:darkblue"  
+											 filterValue="#{frekwencjaLista.filterValues['obecnosc.wartosc']}" headerText="Wpis" 
+											 filterMatchMode="contains">											
+											 		<h:outputText value="#{obecnosc.wartosc}" />
+											 </p:column>
+											  <p:column  filterBy="#{obecnosc.godzinaLekcyjna}" sortBy="#{obecnosc.godzinaLekcyjna}" 
+											  filterValue="#{frekwencjaLista.filterValues['godzinaLekcyjna']}" headerText="G.l." 
+											  style="width:70px">
+											 		<h:outputText value="#{obecnosc.godzinaLekcyjna}" />
+											 </p:column>
+											 <p:column filterBy="#{obecnosc.data}" sortBy="#{obecnosc.data}" 
+											 filterValue="#{frekwencjaLista.filterValues['data']}" headerText="Data" 
+											 filterMatchMode="contains">
+											 		<h:outputText value="#{obecnosc.data}">
+											 			<f:convertDateTime pattern="YYYY-MM-dd" locale="pl" />
+											 		</h:outputText>
+											 </p:column>
+											  <p:column filterBy="#{obecnosc.imieNazwiskoUser}" sortBy="#{obecnosc.imieNazwiskoUser}" 
+											  filterValue="#{frekwencjaLista.filterValues['imieNazwisko']}" headerText="Wpisał" 
+											  filterMatchMode="contains" priority="3">
+											 		<h:outputText value="#{obecnosc.imieNazwiskoUser}" /> 
+											 </p:column>
+											 	 <p:column filterBy="#{obecnosc.dataWpisu}" sortBy="#{obecnosc.dataWpisu}" filterValue="#{frekwencjaLista.filterValues['dataWpisu']}" 
+											 	 headerText="Wpisano" filterMatchMode="contains" priority="2">
+											 		<h:outputText value="#{obecnosc.dataWpisu}">
+											 			<f:convertDateTime pattern="YYYY-MM-dd HH:mm" locale="pl" />
+											 		</h:outputText>
+											 </p:column>
+											<f:facet name="{saveOb}" >
+												<p:commandButton rendered="#{logowanie.poziomUprawnien==2 or (logowanie.poziomUprawnien==1)}" process="dtObNb"  update="pgObDialog" 
+												oncomplete="PF('obWidget').show()" icon="ui-icon-pencil"  style="float:right;margin-top:5px" />
+												<div style="clear:both"></div>
+											</f:facet>		 	
+						</p:dataTable>
+			
+				</p:rowExpansion>
+		</p:dataTable>
+		</h:form>
+	</p:outputPanel>
+				<p:dialog header="Poprawa frekwencji" widgetVar="obWidget" id="pgObDialog" appendTo="@(body)"  modal="true"  width="800"   
+				styleClass="my-dialog bg-light" > 
+															
+														<h:form>
+														<p:growl id="msgs"/>
+															<p:dataTable id="dtDialog"  var="obecnDoZapisu" value="#{frekwencjaLista.selectedObecnosc}" emptyMessage="Zaznacz wpis/y do poprawy!"  style="text-align:center">
+																<p:column headerText="Godz.l.">
+																	<h:outputText value="#{obecnDoZapisu.godzinaLekcyjna}" />
+																</p:column>
+																	<p:column headerText="Wpis">
+																	<h:outputText value="#{obecnDoZapisu.wartosc}" />
+																</p:column>
+																<p:column headerText="Data">
+																	<h:outputText value="#{obecnDoZapisu.data}">
+																	<f:convertDateTime pattern="dd-MM-YYYY" locale="pl"/>
+																	</h:outputText>
+																</p:column>
+																<p:column  headerText="Rejestr." >
+																	<h:outputText value="#{obecnDoZapisu.imieNazwiskoUser}" />
+																</p:column>
+																<f:facet name="footer" >
+																<p:panelGrid columns="3" style="max-width:400px;float:right"  styleClass="ui-panelgrid-blank">
+																		 	  <p:selectOneMenu value="${frekwencjaLista.wartoscObSelected}" style="width:80%">
+																		 	 		 <f:selectItems value="#{frekwencjaLista.wyborObecnoscList}"/>
+																		 	  </p:selectOneMenu>
+																		 	<p:commandButton id="ZapiszPopraw" icon="ui-icon-disk"  value="Zapisz"   
+																		 	oncomplete="PF('obWidget').hide(),PF('dataTableWidget').filter(),PF('dataTableWidget').unselectAllRows()" actionListener="#{frekwencjaLista.obChange}" />
+																</p:panelGrid>
+																<div style="clear:both"></div>
+																</f:facet>
+															</p:dataTable>
+														</h:form>	
+													<p:spacer />
+					</p:dialog>	
+								
+										
+ </p:panel>
+ </ui:define>
+	<ui:define name="footer">
+	</ui:define>
+
+	
+</ui:composition>

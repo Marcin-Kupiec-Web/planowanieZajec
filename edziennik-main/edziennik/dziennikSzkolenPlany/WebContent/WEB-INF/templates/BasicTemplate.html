@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+
+	<title><ui:insert name="title">eDziennik</ui:insert></title>
+	<h:outputStylesheet name="css/datePicker.css" />
+	<h:outputStylesheet name="css/BasicTemplate.css?71" />
+	<h:outputStylesheet library="font-awesome" name="css/all.css" />
+	<h:outputStylesheet name="css/style.css?7993" />
+	<h:outputStylesheet name="css/planZajec.css" />
+	<h:outputStylesheet name="css/universal.css?901" />
+		<h:outputScript library="js" name="logoutTimeout.js?373" />
+	<h:outputScript library="js" name="BasicTemplate.js?832" />
+	<h:outputScript library="js" name="pl.js" />
+	<h:outputScript library="js" name="plT.js" />
+</h:head>
+<h:body onload="StartTimers();" onmousemove="ResetTimers();">
+	<p:layout fullPage="true">
+		<div id="timeout">
+			    <h1>Wylogowanie!</h1>
+			    <p>Za minutę system automatycznie wyloguje uzytkownika<br />
+			     Rusz kursorem aby temu zapobiec.</p>
+		</div>
+		<c:choose>
+			<c:when test="#{not empty logowanie.sessionLoged}">
+			<ui:include src="menuBar.html" />
+			
+			<div class="content" id="content">
+					<div class="centerUnitTopMenu">
+								<ui:insert name="subMenuCont"></ui:insert>
+								<div style="clear: both"></div>
+					</div>
+					<div class="main">
+							<ui:insert name="content">
+											<h:outputText value="Strona w budowie" />
+							</ui:insert>
+					</div>
+					 <div class="footer"><ui:insert name="footer"></ui:insert></div>
+    	 </div>
+
+ <ui:insert name="dialog"></ui:insert>
+			</c:when>
+			<c:otherwise>
+				<p:layoutUnit position="center" styleClass="centerUnit">
+					<div id="wyloguj">
+						<p:button value="Zaloguj się" outcome="/index.xhtml" />
+					</div>
+				</p:layoutUnit>
+			</c:otherwise>
+		</c:choose>
+	</p:layout>
+
+</h:body>
+</html>
+
+<!-- 
+		<p:layoutUnit position="north" styleClass="headerUnit">
+					<ui:include src="menuBar.html" />
+				</p:layoutUnit>
+
+				<p:layoutUnit position="west" size="270" header="Nawigacja"
+					resizable="true" closable="false" collapsible="true"
+					styleClass="leftUnit" collapsed="true" effect="shake">
+
+					<ui:insert name="leftPane"></ui:insert>
+					<h:form id="formDatapicker">
+						<p:calendar id="inline" value="#{calendarView.dateLeftPanel}"
+							mode="inline" styleClass="myCalendarLeftPane" locale="pl" />
+					</h:form>
+
+				</p:layoutUnit>
+
+				<p:layoutUnit position="center" class="centerUnit">
+					<div class="centerUnitTopMenu">
+						<ui:insert name="subMenuCont"></ui:insert>
+						<div style="clear: both"></div>
+					</div>
+
+					<div class="centerUnitInsert">
+						<ui:insert name="content">
+							<h:outputText value="Strona w budowie" />
+						</ui:insert>
+					</div>
+				</p:layoutUnit>
+
+				<p:layoutUnit position="south" styleClass="footerUnit">
+					<ui:insert name="footer"></ui:insert>
+				</p:layoutUnit>
+
+				<ui:insert name="dialog"></ui:insert>
+ -->

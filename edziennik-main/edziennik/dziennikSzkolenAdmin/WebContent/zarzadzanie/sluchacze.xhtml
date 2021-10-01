@@ -1,0 +1,256 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/BasicTemplate.html">
+	<ui:define name="styleCSS"><h:outputStylesheet name="css/planZajec.css" /></ui:define>	
+		<ui:define name="content" >
+		<h:panelGroup  rendered="#{poziomUprawnien eq 1 or (poziomUprawnien eq 5)}">
+	  
+		<h:form >
+				<p:panelGrid id="pgOs" layout="grid" class="shadow" columns="3" cellpadding="5" style="margin:auto; width:70%">
+				<h:panelGrid style="width:100%">
+					<p:outputLabel>Komp.</p:outputLabel>
+						    <p:selectOneMenu id="kompania" value="#{oddzialy.kompania}" lazy="true" style="width:80%">
+					    		<p:ajax event="change" listener="#{oddzialy.changeKompania}" update="pgOs,formSluchacze" />
+					    		<f:selectItem />
+					        	 <f:selectItems value="#{oddzialy.kompanieListNazwa}"/> 
+					  	  </p:selectOneMenu>
+			  </h:panelGrid>
+			  <h:panelGrid style="width:100%">
+					 <p:outputLabel>Plut.</p:outputLabel>
+							<p:selectOneMenu  value="#{oddzialy.pluton}" lazy="true" style="width:80%">
+							    <p:ajax event="change" listener="#{oddzialy.changePluton}" update="pgOs,formSluchacze" />
+							    	<f:selectItem />
+							         <f:selectItems value="#{oddzialy.plutonListNazwa}"/> 
+							 </p:selectOneMenu>
+				</h:panelGrid>
+				<h:panelGrid style="width:100%">
+					   <p:outputLabel>Szkol.</p:outputLabel>
+						    <p:selectOneMenu value="#{oddzialy.szkolenie}" lazy="true" style="width:80%">
+						    <p:ajax event="change" listener="#{oddzialy.changeSzkolenie()}" update="pgOs,formSluchacze" />
+						   		 <f:selectItem />
+						         <f:selectItems value="#{oddzialy.plutonListSzkolenie}"/>
+						    </p:selectOneMenu>
+				</h:panelGrid>
+				<h:panelGrid style="width:100%">
+						    <h:outputLabel>Imię: </h:outputLabel>
+				   				<p:inputText value="#{oddzialy.imieSluchacz}" style="width:80%"/>
+				 </h:panelGrid>
+				 <h:panelGrid style="width:100%">
+				   			 <h:outputLabel>Nazwisko: </h:outputLabel>
+				   				<p:inputText value="#{oddzialy.nazwiskoSluchacz}" style="width:80%"/>	
+				  </h:panelGrid>
+				  <h:panelGrid style="width:100%">
+				   			<h:outputLabel>Kadrowy: </h:outputLabel>
+				   				<p:inputText value="#{oddzialy.kadrowySluchacz}" style="width:80%"/>
+				  </h:panelGrid>
+				  <h:panelGrid style="width:100%">	
+				   			<h:outputLabel>Jednostka: </h:outputLabel>
+				   				<p:inputText value="#{oddzialy.jednostkaKierujacaSluchacz}" style="width:80%"/>	
+				   </h:panelGrid>
+				   <h:panelGrid style="width:100%">
+				   			<h:outputLabel>Stopień: </h:outputLabel>
+				   				 	 <p:selectOneMenu value="#{oddzialy.stopienSluchacz}" style="width:80%">
+											<f:selectItems value="#{oddzialy.stopnie}"/>
+								</p:selectOneMenu>
+				   </h:panelGrid>
+				   <h:panelGrid style="width:100%">
+							   <h:outputLabel>Pokój: </h:outputLabel>
+				   				<p:inputText value="#{oddzialy.pokoj}" style="width:80%"/>	
+				   </h:panelGrid>
+				<p:selectBooleanCheckbox rendered="#{poziomUprawnien eq 1 or (poziomUprawnien eq 5)}" 
+								   value="#{oddzialy.archbool}" itemLabel="arch."/>
+				<h:panelGrid style="width:100%"></h:panelGrid>
+						    <p:commandButton value="Szukaj" actionListener="#{oddzialy.findSluchacze}" update="pgOs,formSluchacze" style="width:90%;margin:auto;padding:5px"/>
+						      
+			</p:panelGrid>
+		</h:form>
+		<h:form>
+		</h:form>
+				<!-- dialog do dodawania nowych uczniów -->
+		<p:dialog id="rsd" header="Rejestracja słuchacza" widgetVar="dlgRejestracjaSluchacz"  modal="true"  appendTo="@(body)" style="background:white;">
+		<p:ajax event="close"  update="rsd" listener="#{oddzialy.closeAddSluchaczDialog}" resetValues="true" />
+				<h:form style="text-align:center" id="dodajSluchaczaForm">
+				<p:growl id="msgsds" showDetail="true"/>
+					<h:panelGrid columns="6" >
+							<h:outputLabel>Stopień</h:outputLabel>
+							 	 <p:selectOneMenu value="#{oddzialy.stopiens}" required="true">
+												 		<f:selectItems value="#{oddzialy.stopnie}"/>
+								</p:selectOneMenu>
+							<h:outputLabel>Nazwisko</h:outputLabel>
+									 <p:inputText value="#{oddzialy.nazwiskos}" required="true"/>
+							<h:outputLabel>Imię</h:outputLabel>
+									 <p:inputText value="#{oddzialy.imies}" required="true"/>
+							<h:outputLabel>Nr.dz. </h:outputLabel>
+									<p:inputText  value="#{oddzialy.nrDzienniks}" required="true"  style="width:100px" />
+							<h:outputLabel>Jednostka</h:outputLabel>
+									 <p:inputText value="#{oddzialy.jednostkas}" />
+							<h:outputLabel>Kadrowy </h:outputLabel>
+									<p:inputText  value="#{oddzialy.kadrowy}" required="true" style="width:100px"/>
+							<h:outputLabel>Pokoj</h:outputLabel>
+									 <p:inputText value="#{oddzialy.pokojs}" required="true"/>
+							<h:outputLabel >Usunięty</h:outputLabel>
+									 	 <p:selectOneMenu value="#{oddzialy.usunietys}" >
+												 		<f:selectItem itemValue="NIE" itemLabel="NIE"/>
+												 		<f:selectItem itemValue="TAK" itemLabel="TAK"/>
+											</p:selectOneMenu>
+							<h:outputText value="Logowanie: " />
+        					<p:toggleSwitch value="#{oddzialy.automatyczneKonto}">
+        						<p:ajax listener="#{oddzialy.dodajKonto}" process="@this" update=":dodajSluchaczaForm:msgsds,:dodajSluchaczaForm:loginHaslo" />
+        					</p:toggleSwitch>
+						</h:panelGrid>
+						<h:panelGrid  id="loginHaslo" style="width:100%!important">
+							<h:panelGrid columns="4" rendered="#{oddzialy.automatyczneKonto}" style="background:whitesmoke!important;border:1px solid lightgray!important;width:100%;margin:auto;padding:5px;
+							border-radius:3px">
+								<h:outputLabel>Login: </h:outputLabel>
+											<p:inputText value="#{oddzialy.login}"/>
+								<h:outputLabel>Hasło: </h:outputLabel>
+											<p:password value="#{oddzialy.haslo}" />
+							</h:panelGrid>
+						</h:panelGrid>
+						<p:commandButton  action="#{oddzialy.addSluchacz()}" value="Zapisz" icon="ui-icon-calculator" update=":formSluchacze, dodajSluchaczaForm" style="margin:20px;width:90%;padding:5px"/>
+						
+				</h:form>	
+		</p:dialog>
+	
+	<h:form id="formSluchacze" >
+				<p:growl id="msgs" showDetail="false"/>
+				<p:dataTable  rendered="#{oddzialy.wybranyPluton!=null or (oddzialy.sluchaczeSorted.size()>0)}" id="sluchacze" var="sluchacz" 
+				value="#{oddzialy.sluchaczeSorted}" editable="true" 
+				style="text-align:center;margin-top:20px" rowKey="#{sluchacz.idS}" emptyMessage="Brak wyników"
+				rowStyleClass="#{sluchacz.usuniety == 'TAK' ? 'usunietyRow' : ''}" class="my-tab-hover my-tab">
+							<f:facet name="header">
+								<h:outputLabel value="Sluchacze"/>
+							
+							  <h:commandLink style="float:left;position:relative;top:5px" rendered="#{!oddzialy.edycjaTabeli}">
+										<i  class="fa fa-file-excel" style="font-size:larger;color:#a66c20"></i>
+											<p:dataExporter type="xls" target="sluchacze" fileName="wydrukSluchacze"/>
+						    	</h:commandLink>
+								<p:commandButton type="button" icon="ui-icon-calculator" value="Dodaj" rendered="#{(poziomUprawnien eq 1 or (poziomUprawnien eq 5)) and (oddzialy.wybranyPluton!=null)}" style="float:right" onclick="PF('dlgRejestracjaSluchacz').show();"/>
+								  <p:selectBooleanButton value="#{oddzialy.edycjaTabeli}" onLabel="Edycja" offLabel="Edycja" onIcon="fa fa-check" offIcon="fa fa-times" 
+						 			 rendered="#{poziomUprawnien eq 1 or (poziomUprawnien eq 5)}" style="float:right">
+										<p:ajax update=":formSluchacze:msgs,:formSluchacze:sluchacze" listener="#{plutony.rendExpTab()}"/>
+									</p:selectBooleanButton>
+								<div style="clear:both"></div>
+							</f:facet>
+							<p:ajax event="rowEdit" listener="#{oddzialy.onRowEditSluchacz}" update=":formSluchacze:msgs"/>
+							<p:column headerText="Id" style="width:70px" rendered="#{poziomUprawnien eq 1 or (poziomUprawnien eq 5)}" sortBy="#{sluchacz.idS}">
+									<h:outputText  value="#{sluchacz.idS}"/>
+							</p:column>
+							<p:column headerText="Dz." sortBy="#{sluchacz.nrDziennik}" style="width:5%">
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText  value="#{sluchacz.nrDziennik}"/></f:facet>
+									<f:facet name="input"><p:inputText  value="#{sluchacz.nrDziennik}" required="true"  /></f:facet>
+								</p:cellEditor>
+							</p:column>
+								<p:column headerText="Kadr." sortBy="#{sluchacz.idSluchacz}" >
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText  value="#{sluchacz.idSluchacz}"/></f:facet>
+									<f:facet name="input"><p:inputText  value="#{sluchacz.idSluchacz}" required="true" /></f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Stop." sortBy="#{sluchacz.stopienSluchacz}" >
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText  value="#{sluchacz.stopienSluchacz}"/></f:facet>
+									<f:facet name="input">
+											 	 <p:selectOneMenu value="#{sluchacz.stopienSluchacz}" required="true">
+												 		<f:selectItems value="#{oddzialy.stopnie}"/>
+												</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Nazwisko" sortBy="#{sluchacz.nazwiskoSluchacz}" style="font-weight:bold;text-align:left">
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText  value="#{sluchacz.nazwiskoSluchacz}"/></f:facet>
+									<f:facet name="input"><p:inputText value="#{sluchacz.nazwiskoSluchacz}" required="true"/></f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Imię" sortBy="#{sluchacz.imieSluchacz}" style="font-weight:bold;text-align:left">
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText  value="#{sluchacz.imieSluchacz}"/></f:facet>
+									<f:facet name="input"><p:inputText value="#{sluchacz.imieSluchacz}" required="true"/></f:facet>
+								</p:cellEditor>
+							</p:column>
+								<p:column  headerText="Komp. | plut. | szkol." sortBy="#{sluchacz.pluton.oznaczenieSzkolenia}" 
+								style="font-weight:bold;text-align:center;width:10%" >
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText  value="#{sluchacz.pluton.kompania.nazwaKompania} | #{sluchacz.pluton.nazwaPluton} | #{sluchacz.pluton.oznaczenieSzkolenia}"/></f:facet>
+									<f:facet name="input">
+										<h:panelGrid columns="1" id="colSzkol" class="colSzkol">
+											<p:selectOneMenu value="#{oddzialy.kompania}" lazy="true" style="width:70%;margin:auto">
+										    		<p:ajax event="change" listener="#{oddzialy.changeKompania}" update="colSzkol" />
+										    		<f:selectItem />
+										        	 <f:selectItems value="#{oddzialy.kompanieListNazwa}"/> 
+					  	  						</p:selectOneMenu>
+					  	  						
+												<p:selectOneMenu value="#{oddzialy.pluton}" lazy="true" style="width:70%;margin:auto">
+										    		<p:ajax event="change" listener="#{oddzialy.changePluton()}" update="colSzkol" />
+										    		<f:selectItem  />
+										        	 <f:selectItems value="#{oddzialy.plutonListNazwa}"/> 
+					  	  						</p:selectOneMenu>
+							
+					  	  							<p:selectOneMenu value="#{oddzialy.szkolenie}" lazy="true" style="width:70%;margin:auto">
+													    <p:ajax event="change" listener="#{oddzialy.changeSzkolenie()}" update="colSzkol"/>
+													   		 <f:selectItem />
+													         <f:selectItems value="#{oddzialy.plutonListSzkolenie}"/>
+						   						 </p:selectOneMenu>
+										</h:panelGrid>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Pokój" sortBy="#{sluchacz.pokoj}">
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText  value="#{sluchacz.pokoj}"/></f:facet>
+									<f:facet name="input"><p:inputText value="#{sluchacz.pokoj}" required="true"/></f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Jedn. org." sortBy="#{sluchacz.jednostkaKierujaca}" style="width:10%">
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText  value="#{sluchacz.jednostkaKierujaca}"/></f:facet>
+									<f:facet name="input"><p:inputText value="#{sluchacz.jednostkaKierujaca}" required="true"/></f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Usunięty" sortBy="#{sluchacz.usuniety}" >
+								<p:cellEditor>
+									<f:facet name="output">
+									<h:outputText  value="#{sluchacz.usuniety}"/>
+									<h:outputText  value="#{sluchacz.dataRemove}" style="display:block">
+											<f:convertDateTime pattern="dd-MM-yyyy"/>
+										</h:outputText>
+									</f:facet>
+									<f:facet name="input">
+											 <p:selectOneMenu value="#{sluchacz.usuniety}" >
+												 		<f:selectItem itemValue="NIE" itemLabel="NIE"/>
+												 		<f:selectItem itemValue="TAK" itemLabel="TAK"/>
+											</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column style="width:55px;text-align:center" rendered="#{poziomUprawnien eq 1 and oddzialy.edycjaTabeli}" >
+							<f:facet name="header"><i  class="fa fa-eraser"></i></f:facet>
+							<p:commandButton icon="fa fa-cut" actionListener="#{oddzialy.removeSluchacz}" update=":formSluchacze"  class="buttDelete btn-sm"> 
+									<f:attribute name="removeRow" value="#{sluchacz}" />
+									<p:confirm  header=" Uwaga, próbujesz usunąć słuchacza!" message=" Czy potwierdzasz? " /> 
+							</p:commandButton>
+	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+        <p:commandButton value="Tak" type="button" styleClass="ui-confirmdialog-yes bg-danger" icon="fa fa-check" />
+        <p:commandButton value="Nie" type="button" styleClass="ui-confirmdialog-no bg-primary" icon="fa fa-times" />
+    </p:confirmDialog>
+							</p:column>
+							<p:column style="width:55px;text-align:center" rendered="#{(poziomUprawnien eq 1 or (poziomUprawnien eq 5)) and (oddzialy.edycjaTabeli)}">
+							<f:facet name="header"><i  class="fa fa-edit"></i></f:facet>
+								<p:rowEditor />
+							</p:column>
+						</p:dataTable>
+			</h:form>
+	</h:panelGroup>
+	 </ui:define>
+	<ui:define name="footer">
+	</ui:define>
+	
+</ui:composition>
+

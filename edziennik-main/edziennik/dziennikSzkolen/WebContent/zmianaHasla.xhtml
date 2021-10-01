@@ -1,0 +1,39 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" >
+	<f:view contentType="text/html">
+	<h:head>
+		<h:outputStylesheet name="css/style.css?135" />
+		<h:outputStylesheet name="css/universal.css?759" />
+			
+	</h:head>
+<h:body class="bg-secondary">  
+	<h:form style="margin:auto;margin-top:10%;width:520px">
+									<p:panel id="panelFormLogowanie" header="zmień hasło"  class="headerLoguj">
+									<p:messages id="msgs"/>
+										<h:panelGrid columns="3" cellpadding="3" >
+											<p:outputLabel for="haslo" value="Hasło"/>
+											<p:password id="haslo" value="#{zmianaHasla.noweHaslo}"  required="true" strongLabel="Silne" weakLabel="Słabe" goodLabel="Dobre" 
+											feedback="true" promptLabel="min. 8 znaków, wielka litera, znak specjalny" autocomplete="off" label="Hasło" style="margin:auto;width:99%;box-shadow:none">
+												<f:validateLength minimum="8" />
+											</p:password>
+											<p:message for="haslo" display="icon"/>
+											<p:outputLabel for="rehaslo" value="Powtórz hasło"/>
+											<p:password id="rehaslo" value="#{zmianaHasla.reNowehaslo}" required="true" style=";margin:auto;width:99%;box-shadow:none">
+												<f:validateLength minimum="8" />
+											</p:password>
+											<p:message for="rehaslo" display="icon"/>
+										</h:panelGrid>
+										<p:commandButton update="panelFormLogowanie" value="Zapisz"  action="#{zmianaHasla.zmienHaslo(true)}" style="font-family:times;width:80%;margin:auto;margin-top:15px"/>
+									</p:panel>
+							</h:form>
+			
+		
+</h:body>
+</f:view>
+</html>

@@ -1,0 +1,186 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" >
+	
+<div class="topnav shadow bg-secondary bord-none" id="myTopnav" >
+             	<a href="javascript:void(0);" class="icon" onclick="openNav()" style="float:left">
+  					  <i class="fa fa-bars"></i>
+  			 	</a>
+<p:link class="#{param.i==0?'active bord-none':''}" outcome="/start/terminarz.xhtml" value="Terminarz"  title="Icon Only">
+			   			 <f:param name="i" value="0" />
+				</p:link>
+              <p:link class="#{param.i==1?'active bord-none':''}" outcome="/wiadomosci/odebraneKadra.xhtml" rendered="#{logowanie.poziomUprawnien!='7'}" 
+              value="Wiadomości"  title="Wiadomości">
+			   			 <f:param name="i" value="1" />
+			   			  <f:param name="productId" value="10" />
+			 </p:link>
+              <p:link class="#{param.i==4?'active bord-none':''}" outcome="/wiadomosci/odebraneSluchacz.xhtml" rendered="#{logowanie.poziomUprawnien=='7'}" 
+              value="Wiadomości"  title="Wiadomości">
+			   			 <f:param name="i" value="4" />
+			   			 <f:param name="productId" value="10" />
+			 </p:link>
+             <p:link class="#{param.i==3?'active bord-none':''}"  outcome="/planZajec/planZajec.xhtml" value="Plany"  title="Plany">
+			   			 <f:param name="i" value="3" />
+			</p:link>
+			<p:link  class="#{param.i==2?'active bord-none':''}" outcome="/zajecia/frekwencja.xhtml"  value="Zajęcia"  title="Zajęcia"
+			rendered="#{logowanie.poziomUprawnien=='7' or logowanie.poziomUprawnien le 4}">
+			   			 <f:param name="i" value="2" />
+		        		 <f:param name="subPage" value="frekwencja" />
+			</p:link>
+			<p:link  class="#{param.i==2?'active bord-none':''}" outcome="/zajecia/tematy.xhtml"  value="Zajęcia"  title="Zajęcia"
+			rendered="#{logowanie.poziomUprawnien ge 4 and (logowanie.poziomUprawnien!='7')}">
+			   			 <f:param name="i" value="2" />
+		        		 <f:param name="subPage" value="tematy" />
+			</p:link>
+			<p:link  class="#{param.i==5?'active bord-none':''}" outcome="/plutony/plutony.xhtml" value="Plutony" title="Plutony" 
+						rendered="#{logowanie.poziomUprawnien!='7'}">
+			   			 <f:param name="i" value="5" />
+			</p:link>
+			<p:link  class="#{param.i==6?'active bord-none':''}" outcome="/sluchacze/sluchacze.xhtml" value="Słuchacze"  title="Słuchacze" 
+			rendered="#{logowanie.poziomUprawnien le 4}" >
+			   			 <f:param name="i" value="6" />
+			</p:link>
+           	<a href="javascript:void(0);" class="icon iconResp" onclick="myFunction()">
+  					  <i class="fa fa-bars"></i>
+  			 </a>
+  			 <div class="wylogujButt f-smr">  
+  			    
+ 				<p:link outcome="/index.xhtml" >
+ 				<span class="fa fa-sign-out-alt"></span>
+    						<f:param name="i" value="5" />
+						    <f:param name="subPage" value="administracja" />
+				</p:link>
+			</div>
+	
+	<div style="clear:both"></div>
+      </div>    
+          
+	<!-- 
+	<nav class="navbar navbar-expand-sm navbar-dark">
+  <a class="shadow-sm pl-3 pr-3 btn btn-info btn-sm" href="/dziennikSzkolen/start/terminarz.xhtml">Terminarz</a>
+  <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+   
+  <div class="collapse navbar-collapse mr-auto" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+         <li class="nav-item">
+        <a class="nav-link shadow-sm pl-3 pr-3 btn btn-info btn-sm text-white m-1" href="/dziennikSzkolen/wiadomosci/wiadomosci.xhtml">Wiadomości</a>
+      </li>   
+      <li class="nav-item">
+        <a class="nav-link shadow-sm pl-3 pr-3 btn btn-info btn-sm text-white m-1" href="/dziennikSzkolen/planZajec/planZajec.xhtml">Plan zajęć</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link shadow-sm pl-3 pr-3 btn btn-info btn-sm text-white m-1" style="color:yellow!important;font-weight:bold" href="/dziennikSzkolen/zajecia/frekwencja.xhtml?subPage=frekwencja">Zajęcia</a>
+      </li>
+      <c:if test="#{logowanie.status!='sluchacz'}">
+      <li class="nav-item">
+        <a class="nav-link shadow-sm pl-3 pr-3 btn btn-info btn-sm text-white m-1" href="/dziennikSzkolen/plutony/plutony.xhtml">Plutony</a>
+      </li>  
+      </c:if>
+       <c:if test="#{logowanie.status!='sluchacz'}">
+         <li class="nav-item">
+        <a class="nav-link shadow-sm pl-3 pr-3 btn btn-info btn-sm text-white m-1" href="/dziennikSzkolen/sluchacze/sluchacze.xhtml">Słuchacze</a>
+      </li>   
+      </c:if>
+
+    </ul>
+    
+        <div class="btn-group m-1 ml-auto" style="float:right">
+			  <a href="/dziennikSzkolen" role="button" class="btn btn-info shadow-sm btn-sm">
+			   				 <span class="fa fa-user"></span>
+			  </a>
+			  <button type="button" class="btn btn-info btn-sm shadow-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+			    <span class="caret"></span>
+			  </button>
+			  <div class="dropdown-menu dropdown-menu-right shadow-sm">
+					  <div class="dropdown-header"><b>Administacja</b></div>
+					    <a class="dropdown-item" href="/dziennikSzkolen/administracja/konto.xhtml?i=5">Konto</a>
+					    <c:if test="#{logowanie.status!='sluchacz'}">
+					    <div class="dropdown-divider p-0 m-1"></div>
+					    	<div class="dropdown-header"><b>Przegląd</b></div>
+					    	<a class="dropdown-item" href="/dziennikSzkolen/administracja/pensum.xhtml?i=5">Pensum</a>
+					    </c:if>
+			  </div>
+</div>
+  </div>  
+ 
+
+</nav>
+-->
+	<!-- 
+	<h:panelGrid columns="2" style="width:100%;padding:0px" >
+	  <p:tabMenu activeIndex="#{param.i}" styleClass="headerMenuBar" >
+			<p:menuitem type="button" value="Terminarz" outcome="/start/terminarz.xhtml" class="btn btn-outline-info" icon="fa fa-calendar-alt" >
+						<f:param name="i" value="0" />
+			</p:menuitem>
+			<button type="button" class="btn btn-primary">Primary</button>
+			<p:menuitem value="Plan zajęć" outcome="/planZajec/planZajec.xhtml" class="headerMenuBarPlanIcon" icon="fa fa-user-clock" >
+						<f:param name="i" value="1" />
+			</p:menuitem>
+			<p:menuitem value="Zajęcia" outcome="/zajecia/frekwencja.xhtml" icon="fa fa-chalkboard" >
+						<f:param name="i" value="2" />
+						<f:param name="subPage" value="frekwencja" />
+			</p:menuitem>
+			<p:menuitem value="Plutony" outcome="/plutony/plutony.xhtml" icon="fa fa-graduation-cap" rendered="#{logowanie.status!='sluchacz'}">
+						<f:param name="i" value="3" />
+						<f:param name="subPage" value="plutony" />
+			</p:menuitem>
+			<p:menuitem value="Słuchacze" outcome="/sluchacze/sluchacze.xhtml" icon="fa fa-users" rendered="#{logowanie.status!='sluchacz'}">
+						<f:param name="i" value="4" />
+						<f:param name="subPage" value="sluchacze" />
+			</p:menuitem>
+	</p:tabMenu>
+		<p:megaMenu orientation="horizontal" style="font-size:smaller;padding:0px;float:right;background:none;border:none;z-index=99999">
+	 		 <p:submenu label="Użytkownik" style="color:white" icon="ui-icon-pin-s">
+	 		 	<p:column >
+	 		 		<p:submenu label="konta">
+				         <p:menuitem value="Zmień dane" url="/administracja/konto.xhtml?i=5" />
+				    </p:submenu>
+				    	<p:submenu label="Inne">
+				         <p:menuitem value="Pensum" url="/administracja/pensum.xhtml?i=5" />
+				    </p:submenu>
+				</p:column>
+				
+			  </p:submenu>
+			  <p:menuitem value="Wyloguj" url="/index.xhtml" icon="ui-icon-key"/>
+		</p:megaMenu>
+</h:panelGrid>
+-->
+</ui:composition>
+
+
+				<!-- 
+				<h:form>  
+				    <p:growl id="messages"/>
+				   			 <p:menubar styleClass="headerMenuBar">
+				        			<p:submenu label="Użytkownicy" icon="ui-icon-person">
+				           				 <p:menuitem value="Wykładowcy" url="/kontaUzytkownikow/wykladowcy.xhtml" />
+				           				 <p:menuitem value="Uczniowie" url="/kontaUzytkownikow/sluchacze.xhtml"  />
+				     			   </p:submenu>
+				 
+				      			  <p:submenu label="Rejestry" icon="ui-icon-pin-s">
+				         			   <p:menuitem value="Logowanie" url="#" icon="ui-icon-unlocked" />
+				         			   <p:menuitem value="Wpisy" url="#" icon="ui-icon-pencil" />
+				         			   <p:menuitem value="Dane osobowe" url="#" icon="ui-icon-contact" />
+				      			  </p:submenu>
+				 
+				      			  <p:submenu label="Pomoc" icon="ui-icon-help">
+				         				   <p:menuitem value="Instrukcja" url="#" />
+				      			  </p:submenu>
+				 
+				    		    <p:submenu label="Ustawienia" icon="ui-icon-gear">
+				         		
+				       			 </p:submenu>
+				 
+				       			 <f:facet name="options">
+				       					 <ui:insert name="szukaj"></ui:insert>
+				        			    <p:commandButton  value="Wyloguj" action="#{logowanie.logout}" icon="ui-icon-extlink" />
+				      			  </f:facet>
+				    </p:menubar>
+				</h:form>
+				
+				 -->

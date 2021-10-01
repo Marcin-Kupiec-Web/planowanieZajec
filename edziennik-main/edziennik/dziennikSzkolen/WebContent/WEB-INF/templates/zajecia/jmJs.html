@@ -1,0 +1,41 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" >
+			 
+			<h:panelGrid columns="4" styleClass="subMenuCont" id="wyborPrzedmiotu" rendered="#{logowanie.poziomUprawnien!='7'}" >
+						<p:outputLabel for="JM" value="#{oceny.plutonWybrany.getIdKurs().getjModol()}" rendered="#{wyborPlutonu.idPlutonWybrany>0}" class="align-bottom"/>
+					    <p:selectOneMenu id="JM" value="#{oceny.jmWybrana}" lazy="true" rendered="#{wyborPlutonu.idPlutonWybrany>0}" style="min-width:50px">
+					    <ui:insert name="akcje" ></ui:insert>
+					    <p:ajax event="change" listener="#{oceny.listJM}" update="wyborPrzedmiotu,contentTrescZajecia" />
+					    	<f:selectItem />
+					         <f:selectItems value="#{oceny.jm}"/>
+					    </p:selectOneMenu>
+		    <p:outputLabel for="JS" value="#{oceny.plutonWybrany.getIdKurs().getjSzkol()}" rendered="#{wyborPlutonu.idPlutonWybrany>0}" class="align-bottom"/>
+					    <p:selectOneMenu id="JS" value="#{oceny.jsWybrana}" lazy="true" rendered="#{wyborPlutonu.idPlutonWybrany>0}" style="min-width:50px">
+					    <p:ajax event="change" listener="#{oceny.listJS}" update="wyborPrzedmiotu,contentTrescZajecia" />
+					    	<f:selectItem />
+					         <f:selectItems value="#{oceny.js}"/>
+					    </p:selectOneMenu>
+			</h:panelGrid>
+	
+
+</ui:composition>
+<!-- 
+	<h:panelGrid columns="4" styleClass="subMenuCont" id="wyborPrzedmiotu">
+						<p:outputLabel for="somJm" value="JM: "/>
+						<p:selectOneMenu value="#{tematy.jmSelected}" id="somJm" panelStyle="width:50px">
+									 <p:ajax event="change" listener="#{tematy.changeJs()}" />
+									 	<f:selectItem />
+										 <f:selectItems value="#{tematy.jm}"/>
+									</p:selectOneMenu>
+		    <p:outputLabel for="somJs" value="JS: " />
+		    	<p:selectOneMenu id="somJs" value="#{tematy.jsSelected}" panelStyle="width:50px">
+								 <p:ajax event="change" oncomplete="window.location.reload()" />
+								 <f:selectItem />
+										 <f:selectItems value="#{tematy.js}"/>
+									</p:selectOneMenu>
+		
+			</h:panelGrid>
+ -->

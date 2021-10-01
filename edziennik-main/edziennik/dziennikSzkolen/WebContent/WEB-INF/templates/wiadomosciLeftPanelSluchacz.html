@@ -1,0 +1,31 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" >
+	
+	    <ul style="list-style-type:none;padding:0px;margin:auto;font-size:larger">
+	    			<li class="m-10">
+								<p:linkButton outcome="/wiadomosci/odebraneSluchacz.xhtml" class="#{param.productId eq '10'?'active shadow':'shadow'}" 
+								value="Odebrane" icon="fa fa-inbox" style="width:98%;margin:auto!important;padding:5px">
+		    						<f:param name="productId" value="10" />
+		    						<f:param name="i" value="1" />
+							</p:linkButton>
+					</li>
+						<li class="m-10">
+								<p:linkButton outcome="/wiadomosci/wyslaneSluchacz.xhtml" class="#{param.productId eq '9'?'active shadow':'shadow'}" 
+								value="Wysłane" icon="fa fa-file-import" style="width:98%;margin:auto!important;padding:5px">
+		    						<f:param name="productId" value="9" />
+		    						<f:param name="i" value="1" />
+							</p:linkButton>
+						</li>
+						<li class="m-10">
+										<p:linkButton outcome="/wiadomosci/nowaWiadomoscSluchacz.xhtml" class="bg-pink-light shadow"
+										 value="Napisz" icon="fa fa-mail-bulk" style="width:98%;margin:auto!important;padding:5px">
+						    						<f:param name="productId" value="8" />
+						    						<f:param name="i" value="1" />
+										</p:linkButton>
+							</li>
+					</ul>
+	</ui:composition>

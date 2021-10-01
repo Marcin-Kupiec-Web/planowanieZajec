@@ -1,0 +1,54 @@
+@charset "UTF-8";
+.ui-datatable th.ui-state-active,.ui-datatable th.ui-state-hover{
+  background: #e4e4e4!important;color:gray!important;
+  outline:none!important;
+}
+.ui-datatable th.ui-state-active .ui-sortable-column-icon .ui-icon
+{
+	color:red!important;
+}
+.ui-selectonemenu-filter-container .ui-icon{
+	margin-right:12px!important;
+	margin-top:2px!important;
+}
+.my-dialog{
+	max-width:84%;
+	margin:8%!important;
+}
+
+.my-autoComplete{
+	background:coral;
+	width:80%!important;
+}
+
+@media only screen and (max-width: 600px) {
+.cell-editor-flow .ui-cell-editor{
+	display:inline-block!important;
+	padding:5px!important;
+}
+.cell-editor-flow td{
+	width:100%!important;
+}
+.cell-editor-flow td:nth-child(odd){
+	background:whitesmoke;
+
+	}
+.cell-editor-flow .ui-cell-editor::after{
+	clear:both!important;
+}
+		.my-editable .ui-widget-content td {
+            background-image: none;
+            width:100%!important;
+            text-align:left!important
+        }
+       .my-editable .ui-datatable-selectable  td:first-child,  .my-editable .ui-widget-content  td:first-child {
+        background:#d9ecff!important;
+        color:#555555!important;
+        font-weight:bolder;
+        }
+        
+        .my-editable .ui-datatable-selectable td:first-child .ui-column-title:before{
+        content:"Wybierz"}
+}
+
+

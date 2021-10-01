@@ -1,0 +1,917 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/BasicTemplate.html">
+	<ui:define name="styleCSS">
+		<h:outputStylesheet name="css/planZajec.css" />
+	</ui:define>
+	<ui:define name="subMenuCont">
+	<h:form id="formSzkol">
+		<p:toolbar>
+		
+			<f:facet name="left">				
+					<div class="ui-inputgroup">
+						<span class="ui-inputgroup-addon"><i
+							class="fa fa-user-graduate" style="color: #3182c4"></i></span>
+						<p:selectOneMenu value="#{planyZaklad.szkolenieOneSelect}"
+							id="selectZaklad" appendTo="@this">
+							<p:ajax event="change"
+								listener="#{planyZaklad.changeSzkolenie()}"
+								update="formSzkol,contentTresc" />
+							<f:selectItem itemLabel="Szkolenie" itemValue="" />
+							<f:selectItems value="#{planyZaklad.szkolenieSelectList}" />
+						</p:selectOneMenu>
+					</div>
+					<div class="ui-inputgroup">
+						<span class="ui-inputgroup-addon"><i
+							class="fa fa-university" style="color: #3182c4"></i></span>
+						<p:selectOneMenu value="#{planyZaklad.kompaniaOneSelect}"
+							id="selectZakladKompania" appendTo="@this">
+							<p:ajax event="change" listener="#{planyZaklad.changeKompania()}"
+								update="formSzkol,contentTresc" />
+							<f:selectItem itemLabel="Kompania" itemValue="" />
+							<f:selectItems value="#{planyZaklad.kompaniaSelectList}" />
+						</p:selectOneMenu>
+					</div>
+					<div class="ui-inputgroup">
+						<span class="ui-inputgroup-addon"><i
+							class="fa fa-user-friends" style="color: #3182c4"></i></span>
+						<p:selectOneMenu value="#{planyZaklad.plutonOneSelect}"
+							id="selectZakladPluton" appendTo="@this">
+							<p:ajax event="change" listener="#{planyZaklad.changePluton()}" />
+							<f:selectItem itemLabel="Pluton" itemValue="" />
+							<f:selectItems value="#{planyZaklad.plutonSelectList}" />
+						</p:selectOneMenu>
+					</div>
+					<div class="ui-inputgroup">
+						<span class="ui-inputgroup-addon"><i class="fa fa-search"
+							style="color: #3182c4"></i></span>
+						<p:commandButton value="Szukaj"
+							action="#{planyZaklad.nowyPlutonRedirect}" />
+					</div>
+					<div class="ui-inputgroup">
+						<span class="ui-separator"> <span class="fa fa-ellipsis-v"
+							style="color: gray" />
+						</span>
+					</div>
+				
+			</f:facet>
+			<f:facet name="right">
+					<p:commandButton class="nowy colorIcon" value="Nowy"
+						icon="fa fa-file"
+						oncomplete="PF('dialogZakladyPlanyDodaj').show()"
+						rendered="#{poziomUprawnien==1 or poziomUprawnien==6}"
+						disabled="#{planyZaklad.plutonOneSelect==null}"/>
+
+				</f:facet>
+				
+		</p:toolbar>
+		</h:form>
+	</ui:define>
+	<ui:define name="content">
+		<h:panelGroup id="contentTresc">
+		<p:outputPanel deferred="true" id="zakladyPlanyPanel">
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							        <p:commandButton value="Tak" type="button" styleClass="ui-confirmdialog-yes bg-danger" icon="fa fa-check" />
+							        <p:commandButton value="Nie" type="button" styleClass="ui-confirmdialog-no bg-primary" icon="fa fa-times" />
+    		</p:confirmDialog>
+	    <h3> <h:outputLabel value="Plany zakładów. Termin wybranego szkolenia: #{planyZaklad.dataStartSzkolenie} - #{planyZaklad.dataEndSzkolenie}" 
+	    rendered="#{planyZaklad.planyZakladyPluton!=null}"/></h3>
+
+				<h:form id="kalkulatorZajecForm">
+					<p:dataTable class="dtPlanKalk my-tab-hover" rowKey="#{kalzaj.key}"
+						id="kalkulatorZajecTable" widgetVar="kalkZajTabWidg" var="kalzaj"
+						value="#{planyZaklad.kalkulatorZajec}"
+						rendered="#{planyZaklad.planyZakladyPluton!=null}"
+						style="text-align:center">
+						<f:facet name="header">
+							<div style="display: inline-block; float: left">
+								<p:menuButton value="Widoki">
+									<p:menuitem value="Zakłady"
+										action="#{planyZaklad.zmienWidokAnalizy('zaklad')}"
+										update=":kalkulatorZajecForm:kalkulatorZajecTable,:kalkulatorZajecFormDlg:kalkulatorZajecTableDlg" />
+									<p:menuitem value="Specjalizacje"
+										action="#{planyZaklad.zmienWidokAnalizy('specjalizacje')}"
+										update=":kalkulatorZajecForm:kalkulatorZajecTable,:kalkulatorZajecFormDlg:kalkulatorZajecTableDlg" />
+									<p:separator />
+									<p:menuitem value="Nowe okno" icon="fa fa-window-restore"
+										oncomplete="PF('dialogZakladyPlanyDlg').show()"
+										update=":kalkulatorZajecFormDlg:kalkulatorZajecTableDlg" />
+								</p:menuButton>
+								<h:commandLink value="">
+									<p:dataExporter type="xls" target="kalkulatorZajecTable"
+										fileName="analizaPlanow" />
+								</h:commandLink>
+							</div>
+
+							<div style="display: inline-block; padding: 5px">Analiza
+								planów</div>
+							<div style="clear: both"></div>
+						</f:facet>
+						<f:facet name="footer" >
+						<h:outputLabel value="Zadeklarowano: #{planyZaklad.wszystkieGodziny} godz." style="float:left"/>
+						 	<div style="clear: both"></div>
+						</f:facet>
+
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column rowspan="2" headerText="Grupa" style="width:11%" />
+								<p:column headerText="Suma" />
+								<p:column colspan="2" headerText="Zaploanowano"
+									rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowane')!=null}" />
+								<c:forEach items="#{planyZaklad.miesiaceDniPracujace}"
+									var="entry">
+									<p:column colspan="2"
+										headerText="#{planyZaklad.convertMonth(entry.key.substring(0,entry.key.indexOf('-')))}" />
+								</c:forEach>
+							</p:row>
+							<p:row>
+								<p:column headerText="Godz."/>
+								<p:column headerText="Godz."
+									rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowane')!=null}" />								
+								<p:column headerText="%"
+									rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowane')!=null}" />
+								<c:forEach items="#{planyZaklad.miesiaceDniPracujace}"
+									var="entry">
+									<p:column headerText="Plan"></p:column>
+									<p:column headerText="Limit"></p:column>
+								</c:forEach>
+							</p:row>
+						</p:columnGroup>
+						<p:column style="text-align:left">
+							<f:facet name="footer">
+								<div style="float: right">Podsumowanie:</div>
+							</f:facet>
+							<h:outputText value="#{kalzaj.key}" />
+						</p:column>
+						<p:column>
+							<f:facet name="footer">
+								<h:outputText value="#{planyZaklad.wszystkieGodzinyGrupyFakt()}"
+									style="color:blue"
+									rendered="#{planyZaklad.wszystkieGodzinyGrupyFakt()!=null}" />
+							</f:facet>
+							<h:outputText
+								value="#{planyZaklad.wszystkieGodzinyGrupy.get(kalzaj.key)}"
+								style="color:blue"/>
+						</p:column>
+						<p:column
+							rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowane')!=null}">
+							<f:facet name="footer">
+								<h:outputText
+									value="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowane')}"
+									rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowane')!=null}" />
+							</f:facet>
+							<h:outputText
+								value="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get('0').get('zrealizowane')}"
+								rendered="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get('0').get('zrealizowane')!=null}" />
+						</p:column>
+				
+						<p:column
+							rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowane')!=null}">
+							<f:facet name="footer">
+								<h:outputText
+									value=" #{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowaneProcentyAll')}"
+									style="color:red"
+									rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowaneProcentyAll')!=null}" />
+							</f:facet>
+							<h:outputText
+								value=" #{planyZaklad.kalkulatorZajec.get(kalzaj.key).get('0').get('zrealizowaneProcentyAll')}"
+								style="color:red"
+								rendered="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get('0').get('zrealizowaneProcentyAll')!=null}" />
+						</p:column>
+						<c:forEach items="#{planyZaklad.miesiaceDniPracujace}" var="entry">
+							<p:column class="activeColumn">
+								<f:facet name="footer">
+									<div
+										style="border-bottom: #{planyZaklad.godzninyNadzien(entry.key)!=null?'1px dashed lightgray':''}">
+										<h:outputText
+											value="#{planyZaklad.kalkulatorZajecPodsumowanie.get(entry.key).get('zrealizowane')}"
+											rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get(entry.key).get('zrealizowane')!=null}" />
+										<h:outputText
+											value=" (#{planyZaklad.kalkulatorZajecPodsumowanie.get(entry.key).get('doZrealizowaniaLimit')-planyZaklad.kalkulatorZajecPodsumowanie.get(entry.key).get('zrealizowane')})"
+											style="color:gray;margin:2px"
+											rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get(entry.key).get('zrealizowane')!=null}" />
+									</div>
+									<h:outputText
+										value="#{planyZaklad.godzninyNadzien(entry.key)} g/d"
+										rendered="#{planyZaklad.godzninyNadzien(entry.key)!=null}" />
+
+								</f:facet>
+								<h:outputText
+									value="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('zrealizowane')}"
+									rendered="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('zrealizowane')!=null}"
+									style="font-size:larger;font-weight:bold" />
+								<h:outputText
+									value="(#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('doZrealizowaniaLimit')-planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('zrealizowane')})"
+									style="color:gray;margin:2px"
+									rendered="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('doZrealizowaniaLimit')>0 and planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('zrealizowane')!=null}" />
+							</p:column>
+							<p:column>
+								<f:facet name="footer">
+									<h:outputText
+										value="#{planyZaklad.kalkulatorZajecPodsumowanie.get(entry.key).get('doZrealizowaniaLimit')}"
+										rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get(entry.key).get('doZrealizowaniaLimit')>0}" />
+								</f:facet>
+								<h:outputText
+									value="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('doZrealizowaniaLimit')}"
+									rendered="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('doZrealizowaniaLimit')>0}" />
+							</p:column>
+						</c:forEach>
+					</p:dataTable>
+				</h:form>
+
+				<h:form id="zakladyPlanyForm">
+					<p:growl id="msgsp" showDetail="false" />
+					<p:dataTable id="zakladyPlany" widgetVar="planyZakladyPlany"
+						var="plz" value="#{planyZaklad.planyZakladyPluton}"
+						emptyMessage="Wybierz szkolenie!"
+						style="text-align:center;margin-top:30px" rows="30"
+						paginator="true" rowsPerPageTemplate="15,30,60,120"
+						rowKey="#{plz.id_planyZaklady}" editable="true"
+						selection="#{planyZaklad.selectedPrzedmiotZaplan}"
+						rendered="#{planyZaklad.planyZakladyPluton!=null}">
+						<f:facet name="header">
+							<div style="display: inline-block; float: left">
+								<p:commandButton value="Nowe okno" icon="fa fa-window-restore"
+									oncomplete="PF('dialogZajeciaPlanyDlg').show()"
+									update=":zajeciaPlanyForm:zajeciaPlanyTable" />
+							</div>
+							<div style="display: inline-block;float:left">
+							<p:commandButton value="Usuń" icon="fa fa-cut" id="usunPlany" disabled="#{!planyZaklad.hasSelected()}"
+								rendered="#{poziomUprawnien==1 or poziomUprawnien==6}"
+								class="bg-danger" actionListener="#{planyZaklad.deleteSelectedPlany}"
+								update=":zakladyPlanyDialogForm,
+										:kalkulatorZajecForm:kalkulatorZajecTable,
+										:kalkulatorZajecFormDlg:kalkulatorZajecTableDlg"
+									oncomplete="PF('tablePlanyZaklad').filter(),PF('planyZakladyPlany').filter(),PF('planyZajeciaTableWidg').filter()" >
+								<p:confirm  header=" Uwaga, próbujesz usunac wpis/y!" message=" Czy potwierdzasz? " /> 
+							</p:commandButton>
+							</div>
+							<div style="display: inline-block; padding: 5px">Zaplanowane
+								zajęcia</div>
+							<div style="clear: both"></div>
+						</f:facet>
+						<f:facet name="footer">
+							<p:commandButton icon="fa fa-tint" value="Czyść"
+								actionListener="#{planyZaklad.clearAllFilters('zakladyPlanyForm:zakladyPlany')}"
+								update=":zakladyPlanyForm:zakladyPlany,:zakladyPlanyForm:msgsp"
+								style="width:100px;float:left;;display:inline-block" />
+							<div style="clear: both"></div>
+						</f:facet>
+						<p:ajax event="rowEdit" listener="#{planyZaklad.onRowEditZaplZaj}"
+							oncomplete="PF('tablePlanyZaklad').filter(),PF('planyZakladyPlany').filter(),PF('planyZajeciaTableWidg').filter()"
+							onstart="PF('statusDialog').show()"
+							onsuccess="PF('statusDialog').hide()"
+							update=":zakladyPlanyDialogForm:zakladyPlanyDialog,:zakladyPlanyDialogForm:msgs,:kalkulatorZajecForm:kalkulatorZajecTable,:kalkulatorZajecFormDlg:kalkulatorZajecTableDlg,:zajeciaPlanyForm:zajeciaPlanyTable" />
+			<p:ajax event="rowSelectCheckbox" update="usunPlany" />
+            <p:ajax event="rowUnselectCheckbox"  update="usunPlany"/>
+            <p:ajax event="rowSelect" update="usunPlany" />
+            <p:ajax event="rowUnselect"  update="usunPlany"/>
+            <p:ajax event="toggleSelect" update="usunPlany" />
+						<p:column selectionMode="multiple" style="width:55px"/>								
+						<p:column headerText="Id" style="width:45px">
+							<h:outputText value="#{plz.id_planyZaklady}" />
+						</p:column>
+						<p:column headerText="Rok" sortBy="#{plz.rok}"
+							filterBy="#{plz.rok}"
+							filterValue="#{planyZaklad.filterValues['plz.rok']}"
+							filterMatchMode="contains" style="width:55px">
+							<h:outputText value="#{plz.rok}" />
+						</p:column>
+						<p:column headerText="Zak."
+							sortBy="#{plz.przedmiottemat.zakladyToString}"
+							filterBy="#{plz.przedmiottemat.zakladyToString}"
+							filterValue="#{planyZaklad.filterValues['plz.przedmiottemat.zakladyToString']}"
+							filterMatchMode="contains" style="text-align:left">
+							<h:outputText value="#{plz.przedmiottemat.zakladyToString}" />
+						</p:column>
+						<p:column headerText="Spec."
+							sortBy="#{plz.przedmiottemat.specjalToString}"
+							filterBy="#{plz.przedmiottemat.specjalToString}"
+							filterValue="#{planyZaklad.filterValues['plz.przedmiottemat.specjalToString']}"
+							filterMatchMode="contains" style="text-align:left">
+							<h:outputText value="#{plz.przedmiottemat.specjalToString}" />
+						</p:column>
+						<p:column headerText="Wykł." style="text-align:left"
+							sortBy="#{planyZaklad.wykladowcyToString(plz.userss)}"
+							filterBy="#{planyZaklad.wykladowcyToString(plz.userss)}"
+							filterMatchMode="contains"
+							filterValue="#{planyWykladowcy.filterValues['wykladowcyToString']}">
+							<ui:repeat var="temsp" value="#{plz.userss}" varStatus="sts">
+																	#{temsp.imieUsers.substring(0,1)}. #{temsp.nazwiskoUsers}<ui:fragment
+									rendered="#{!sts.last}">,</ui:fragment>
+							</ui:repeat>
+						</p:column>
+						<p:column headerText="Mies." sortBy="#{plz.miesiac}"
+							filterBy="#{plz.miesiac}" filterMatchMode="contains"
+							filterValue="#{planyZaklad.filterValues['plz.miesiac']}"
+							style="width:70px">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{plz.miesiac}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{plz.miesiac}" style="width:50px" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="#{planyZaklad.strk.jModol}"
+							sortBy="#{plz.przedmiottemat.przedmiot.jm}"
+							filterBy="#{plz.przedmiottemat.przedmiot.jm}"
+							filterValue="#{planyZaklad.filterValues['plz.przedmiottemat.przedmiot.jm']}"
+							filterMatchMode="contains">
+							<h:outputText value="#{plz.przedmiottemat.przedmiot.jm}" />
+						</p:column>
+						<p:column headerText="#{planyZaklad.strk.jSzkol}"
+							sortBy="#{plz.przedmiottemat.przedmiot.js}"
+							filterBy="#{plz.przedmiottemat.przedmiot.js}"
+							rendered="#{planyZaklad.strk.jSzkol!=null}"
+							filterValue="#{planyZaklad.filterValues['plz.przedmiottemat.przedmiot.js']}"
+							filterMatchMode="contains">
+							<h:outputText value="#{plz.przedmiottemat.przedmiot.js}" />
+						</p:column>
+						<p:column headerText="#{planyZaklad.strk.kpn}"
+							sortBy="#{plz.przedmiottemat.nazwa}"
+							filterBy="#{plz.przedmiottemat.nazwa}"
+							filterValue="#{planyZaklad.filterValues['plz.przedmiottemat.nazwa']}"
+							filterMatchMode="contains">
+							<h:outputText value="#{plz.przedmiottemat.nazwa}" />
+						</p:column>
+						<p:column headerText="Suma godz."
+							sortBy="#{plz.przedmiottemat.ileGodzin}"
+							filterBy="#{plz.przedmiottemat.ileGodzin}"
+							filterValue="#{planyZaklad.filterValues['plz.przedmiottemat.ileGodzin']}">
+							<h:outputText value="#{plz.przedmiottemat.ileGodzin}" />
+						</p:column>
+						<p:column headerText="Zapl. godz." sortBy="#{plz.ileGodzin}"
+							filterBy="#{plz.ileGodzin}"
+							filterValue="#{planyZaklad.filterValues['plz.ileGodzin']}">
+
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{plz.ileGodzin}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{plz.ileGodzin}" style="width:50px" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="Kom." sortBy="#{plz.komentarz}"
+							filterBy="#{plz.komentarz}"
+							filterValue="#{planyZaklad.filterValues['plz.komentarz']}">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{plz.przedmiottemat.komentarz}" />
+									<p:fragment rendered="#{plz.przedmiottemat.komentarz!=null}"></p:fragment>
+									<h:outputText value="#{plz.komentarz}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputTextarea value="#{plz.komentarz}"
+										style="margin:5px;width:80%" />
+								</f:facet>
+							</p:cellEditor>
+
+						</p:column>
+						<p:column style="width:55px"
+							rendered="#{poziomUprawnien eq 1 or (poziomUprawnien eq 6)}">
+							<f:facet name="header">
+								<i class="fa fa-eraser"></i>
+							</f:facet>
+							<p:commandButton icon="fa fa-cut"
+								actionListener="#{planyZaklad.removeRow}"
+								oncomplete="PF('tablePlanyZaklad').filter(),PF('planyZakladyPlany').filter(),PF('planyZajeciaTableWidg').filter()"
+									update=":zakladyPlanyDialogForm,
+										:kalkulatorZajecForm:kalkulatorZajecTable,
+										:kalkulatorZajecFormDlg:kalkulatorZajecTableDlg"
+								onstart="PF('statusDialog').show()"
+								onsuccess="PF('statusDialog').hide()" class="buttDelete">
+								<f:attribute name="removeRow" value="#{plz}" />
+								<p:confirm  header=" Uwaga, próbujesz usunac wpis!" message=" Czy potwierdzasz? " /> 
+							</p:commandButton>
+						</p:column>
+						<p:column style="width:55px;text-align:center"
+							rendered="#{poziomUprawnien eq 1}">
+							<f:facet name="header">
+								<i class="fa fa-edit"></i>
+							</f:facet>
+							<p:rowEditor />
+						</p:column>
+					</p:dataTable>
+
+				</h:form>
+
+			<p:resizable for="zakladyPlanyPanel" handles="e,w" />
+			</p:outputPanel>
+		</h:panelGroup>
+	</ui:define>
+
+	<!-- Powielenie zaplanowanych zjec w oknie dialogowym -->
+	<ui:define name="dialog">
+		<p:dialog header="Zaplanowane zajęcia"
+			widgetVar="dialogZajeciaPlanyDlg" minimizable="true"
+			maximizable="true" width="950" position="left" height="80vh">
+			<h:form id="zajeciaPlanyForm">
+				<p:growl id="msgspz" showDetail="false" />
+				<p:dataTable id="zajeciaPlanyTable" class="my-tab-hover"
+					widgetVar="planyZajeciaTableWidg" var="plz"
+					value="#{planyZaklad.planyZakladyPluton}"
+					emptyMessage="Wybierz szkolenie!" style="text-align:center"
+					rows="30" paginator="true" rowsPerPageTemplate="15,30,60,120"
+					rowKey="#{plz.id_planyZaklady}" editable="true">
+					<f:facet name="header">
+						<div style="display: inline-block; padding: 5px">Zaplanowane
+							zajęcia</div>
+						<div style="clear: both"></div>
+					</f:facet>
+					<f:facet name="footer">
+						<p:commandButton icon="fa fa-tint" value="Czyść"
+							actionListener="#{planyZaklad.clearAllFilters('zajeciaPlanyForm:zajeciaPlanyTable')}"
+							update=":zajeciaPlanyForm:zajeciaPlanyTable,:zajeciaPlanyForm:msgspz"
+							style="width:100px;float:left;display:inline-block" />
+						<div style="clear: both"></div>
+					</f:facet>
+
+					<p:column headerText="Id" style="width:55px">
+						<h:outputText value="#{plz.id_planyZaklady}" />
+					</p:column>
+					<p:column headerText="Rok" sortBy="#{plz.rok}"
+						filterBy="#{plz.rok}"
+						filterValue="#{planyZaklad.filterValues['plz.rok']}"
+						filterMatchMode="contains" style="width:65px">
+						<h:outputText value="#{plz.rok}" />
+					</p:column>
+					<p:column headerText="Zakład/y"
+						sortBy="#{plz.przedmiottemat.zakladyToString}"
+						filterBy="#{plz.przedmiottemat.zakladyToString}"
+						filterValue="#{planyZaklad.filterValues['plz.przedmiottemat.zakladyToString']}"
+						filterMatchMode="contains" style="text-align:left">
+						<h:outputText value="#{plz.przedmiottemat.zakladyToString}" />
+					</p:column>
+					<p:column headerText="Specjal."
+						sortBy="#{plz.przedmiottemat.specjalToString}"
+						filterBy="#{plz.przedmiottemat.specjalToString}"
+						filterValue="#{planyZaklad.filterValues['plz.przedmiottemat.specjalToString']}"
+						filterMatchMode="contains" style="text-align:left">
+						<h:outputText value="#{plz.przedmiottemat.specjalToString}" />
+					</p:column>
+					<p:column headerText="Wykł." style="text-align:left"
+						sortBy="#{planyZaklad.wykladowcyToString(plz.userss)}"
+						filterBy="#{planyZaklad.wykladowcyToString(plz.userss)}"
+						filterMatchMode="contains"
+						filterValue="#{planyWykladowcy.filterValues['wykladowcyToString']}">
+						<ui:repeat var="temsp" value="#{plz.userss}" varStatus="sts">
+																	#{temsp.imieUsers.substring(0,1)}. #{temsp.nazwiskoUsers}<ui:fragment
+								rendered="#{!sts.last}">,</ui:fragment>
+						</ui:repeat>
+					</p:column>
+					<p:column headerText="Miesiac" sortBy="#{plz.miesiac}"
+						filterBy="#{plz.miesiac}" filterMatchMode="contains"
+						filterValue="#{planyZaklad.filterValues['plz.miesiac']}"
+						style="width:70px">
+						<h:outputText value="#{plz.miesiac}" />
+					</p:column>
+					<p:column headerText="#{planyZaklad.strk.jModol}"
+						sortBy="#{plz.przedmiottemat.przedmiot.jm}"
+						filterBy="#{plz.przedmiottemat.przedmiot.jm}"
+						filterValue="#{planyZaklad.filterValues['plz.przedmiottemat.przedmiot.jm']}"
+						filterMatchMode="contains">
+						<h:outputText value="#{plz.przedmiottemat.przedmiot.jm}" />
+					</p:column>
+					<p:column headerText="#{planyZaklad.strk.jSzkol}"
+						sortBy="#{plz.przedmiottemat.przedmiot.js}"
+						filterBy="#{plz.przedmiottemat.przedmiot.js}"
+						rendered="#{planyZaklad.strk.jSzkol!=null}"
+						filterValue="#{planyZaklad.filterValues['plz.przedmiottemat.przedmiot.js']}"
+						filterMatchMode="contains">
+						<h:outputText value="#{plz.przedmiottemat.przedmiot.js}" />
+					</p:column>
+					<p:column headerText="#{planyZaklad.strk.kpn}"
+						sortBy="#{plz.przedmiottemat.nazwa}"
+						filterBy="#{plz.przedmiottemat.nazwa}"
+						filterValue="#{planyZaklad.filterValues['plz.przedmiottemat.nazwa']}"
+						filterMatchMode="contains">
+						<h:outputText value="#{plz.przedmiottemat.nazwa}" />
+					</p:column>
+					<p:column headerText="Suma godz."
+						sortBy="#{plz.przedmiottemat.ileGodzin}"
+						filterBy="#{plz.przedmiottemat.ileGodzin}"
+						filterValue="#{planyZaklad.filterValues['plz.przedmiottemat.ileGodzin']}">
+						<h:outputText value="#{plz.przedmiottemat.ileGodzin}" />
+					</p:column>
+					<p:column headerText="Zapl. godz." sortBy="#{plz.ileGodzin}"
+						filterBy="#{plz.ileGodzin}"
+						filterValue="#{planyZaklad.filterValues['plz.ileGodzin']}">
+						<h:outputText value="#{plz.ileGodzin}" />
+					</p:column>
+					<p:column headerText="Komentarz" sortBy="#{plz.komentarz}"
+						filterBy="#{plz.komentarz}"
+						filterValue="#{planyZaklad.filterValues['plz.komentarz']}">
+						<h:outputText value="#{plz.przedmiottemat.komentarz}" />
+						<br />
+						<h:outputText value="#{plz.komentarz}" />
+					</p:column>
+					<p:column style="width:55px"
+						rendered="#{poziomUprawnien eq 1 or (poziomUprawnien eq 6)}">
+						<f:facet name="header">
+							<i class="fa fa-eraser"></i>
+						</f:facet>
+						<p:commandButton icon="fa fa-cut"
+							actionListener="#{planyZaklad.removeRow}"
+							oncomplete="PF('tablePlanyZaklad').filter(),PF('planyZakladyPlany').filter(),PF('planyZajeciaTableWidg').filter()"
+							update=":zakladyPlanyDialogForm,
+							:kalkulatorZajecForm:kalkulatorZajecTable,
+							:kalkulatorZajecFormDlg:kalkulatorZajecTableDlg,
+							:zajeciaPlanyForm:zajeciaPlanyTable"
+							onstart="PF('statusDialog').show()"
+							onsuccess="PF('statusDialog').hide()" class="buttDelete">
+							<f:attribute name="removeRow" value="#{plz}" />
+							<p:confirm  header=" Uwaga, próbujesz usunac wpis!" message=" Czy potwierdzasz? " /> 
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+
+		<!-- Zajecia niezaplanowane z mozliwoscia zaplanowania, w oknie dialogowym -->
+
+		<p:dialog header="Kreator planów" widgetVar="dialogZakladyPlanyDodaj"
+			minimizable="true" maximizable="true" width="950" position="right"
+			height="80vh">
+			<h:form id="zakladyPlanyDialogForm">
+				<p:growl id="msgs" showDetail="false" />
+				
+				<p:outputPanel id="headForm" style="padding:1px;margin-bottom:0px;border:none;">
+					<p:toolbar style="margin-bottom:1px;overflow:auto">
+					<f:facet name="left">
+					<h:panelGrid columns="8">
+					<h:outputLabel for="miesiac" value="Miesiac: " />
+						<p:selectOneMenu id="miesiac" 
+							value="#{planyZaklad.miesiacWybrany}" lazy="true">
+							<p:ajax event="change" listener="#{planyZaklad.ileDoplanowac}"
+								update="zakladyPlanyDialogForm" />
+							<f:selectItem />
+							<f:selectItems value="#{planyZaklad.miesiace}" />
+						</p:selectOneMenu>
+
+						<h:outputLabel for="rok" value=" Rok: " />
+						<p:selectOneMenu id="rok" value="#{planyZaklad.rokWybrany}"
+							lazy="true" required="true">
+								<p:ajax event="change" listener="#{planyZaklad.ileDoplanowac}"
+								update="zakladyPlanyDialogForm" />
+							<p:ajax event="change" />
+							<f:selectItems value="#{planyZaklad.lata}" />
+						</p:selectOneMenu>
+								<div class="ui-inputgroup">
+									<span class="ui-separator"> <span
+										class="fa fa-ellipsis-v" style="color: gray" />
+									</span>
+								</div>
+						<h:panelGrid columns="4" id="ileSelectedIleZapl" 
+										style=" border: 1px solid red; background: beige;border-radius: 3px;
+										padding:1px;margin-top:3px;margin-right:20px"
+										rendered="#{planyZaklad.miesiacWybrany!=null}">
+							<h:outputText value="#{planyZaklad.filterValues.get('specjalToString')}: " 
+										 rendered="#{planyZaklad.filterValues.get('specjalToString')!=null}" />	
+							
+							<h:outputText value="całość: " rendered="#{planyZaklad.filterValues.get('specjalToString')==null}"  />						
+							<h:outputText
+								value="#{planyZaklad.ileSelectedPrzedmiotZap-planyZaklad.ileSelectedPrzedmiot} / "
+								renderded="#{planyZaklad.filterValues.get('specjalToString')!=null}"
+								 />							 
+							<h:outputText value="#{planyZaklad.ileSelectedPrzedmiot} godz."
+								id="ileSelected"/>
+						</h:panelGrid>
+							<p:commandButton icon="fa fa-tint" value="Czyść"
+								actionListener="#{planyZaklad.clearAllFilters('zakladyPlanyDialogForm:zakladyPlanyDialog')}"
+								update=":zakladyPlanyDialogForm:zakladyPlanyDialog,:zakladyPlanyDialogForm:msgs" />
+							<p:commandButton icon="fa fa-save" value="Zapisz"
+								actionListener="#{planyZaklad.zapiszNowyPlan}"
+								update=":zakladyPlanyDialogForm,
+										:kalkulatorZajecForm:kalkulatorZajecTable,
+										:kalkulatorZajecFormDlg:kalkulatorZajecTableDlg"
+								rendered="#{planyZaklad.miesiacWybrany!=null}"
+								oncomplete="PF('tablePlanyZaklad').filter(),PF('planyZakladyPlany').filter(),PF('planyZajeciaTableWidg').filter()"
+								onstart="PF('statusDialog').show()"
+								onsuccess="PF('statusDialog').hide()" />
+						</h:panelGrid>
+				
+						</f:facet>
+						</p:toolbar>
+						<p:toolbar>
+							<f:facet name="left">
+								<div class="ui-inputgroup">
+									<h:outputText value="#{planyZaklad.szkolenieOneSelect}" />
+								</div>
+								<div class="ui-inputgroup">
+									<span class="ui-inputgroup-addon"><i
+										class="fa fa-university" style="color: #3182c4"></i></span>
+									<p:selectOneMenu value="#{planyZaklad.kompaniaOneSelectImport}">
+										<p:ajax event="change"
+											listener="#{planyZaklad.changeKompaniaImport()}"
+											update="plutonyImport" />
+										<f:selectItem itemLabel="Kompania" itemValue="" />
+										<f:selectItems value="#{planyZaklad.kompaniaSelectListImport}" />
+									</p:selectOneMenu>
+								</div>
+								<div class="ui-inputgroup">
+									<span class="ui-inputgroup-addon"><i
+										class="fa fa-user-friends" style="color: #3182c4"></i></span>
+									<p:selectOneMenu value="#{planyZaklad.plutonOneSelectImport}"
+										id="plutonyImport">
+										<f:selectItem itemLabel="Pluton" itemValue="" />
+										<f:selectItems value="#{planyZaklad.plutonSelectListImport}" />
+									</p:selectOneMenu>
+								</div>
+								<div class="ui-inputgroup">
+									<span class="ui-inputgroup-addon"><i
+										class="fa fa-calendar" style="color: #3182c4"></i></span>
+									<p:selectOneMenu
+										value="#{planyZaklad.plutonOneSelectImportMiesiac}"
+										id="plutonyImportMiesiac">
+										<f:selectItem itemLabel="Miesiac" itemValue="" />
+										<f:selectItems value="#{planyZaklad.miesiace}" />
+									</p:selectOneMenu>
+								</div>
+								<div class="ui-inputgroup">
+									<span class="ui-separator"> <span
+										class="fa fa-ellipsis-v" style="color: gray" />
+									</span>
+								</div>
+									<div class="ui-inputgroup">
+
+									<p:commandButton value="Import" 
+										action="#{planyZaklad.importPlanInnyPlut}"
+										update=":zakladyPlanyDialogForm,
+										:kalkulatorZajecForm:kalkulatorZajecTable,
+										:kalkulatorZajecFormDlg:kalkulatorZajecTableDlg"
+										oncomplete="PF('tablePlanyZaklad').filter(),PF('planyZakladyPlany').filter(),PF('planyZajeciaTableWidg').filter()"
+										onstart="PF('statusDialog').show()"
+										onsuccess="PF('statusDialog').hide()" />
+								</div>
+								</f:facet>
+						</p:toolbar>
+				</p:outputPanel>
+				<p:dataTable id="zakladyPlanyDialog" widgetVar="tablePlanyZaklad"
+					var="pz" value="#{planyZaklad.przedmiottematAllPluton}"
+					emptyMessage="Wybierz szkolenie!"
+					style="text-align:center;min-width:700px" rows="30"
+					paginator="true" rowsPerPageTemplate="15,30,60,120"
+					rowKey="#{pz.id_przedmiotTemat}"
+					selection="#{planyZaklad.selectedPrzedmiot}" editable="#{planyZaklad.miesiacWybrany!=null?true:false}"
+					editMode="cell">
+						
+					<p:ajax event="cellEdit" listener="#{planyZaklad.onRowEdit}"
+						update=":zakladyPlanyDialogForm:msgs,:zakladyPlanyDialogForm:headForm" />
+					<p:ajax event="rowSelectCheckbox"
+						listener="#{planyZaklad.onRowSelect}"
+						update=":zakladyPlanyDialogForm:headForm" />
+					<p:ajax event="rowUnselectCheckbox"
+						listener="#{planyZaklad.onRowSelect}"
+						update=":zakladyPlanyDialogForm:headForm" />
+					<p:ajax event="rowSelect"
+						listener="#{planyZaklad.onRowSelect}"
+						update=":zakladyPlanyDialogForm:headForm" />
+					<p:ajax event="rowUnselect"
+						listener="#{planyZaklad.onRowSelect}"
+						update=":zakladyPlanyDialogForm:headForm" />
+					<p:ajax event="toggleSelect" listener="#{planyZaklad.onRowSelect}"
+						update=":zakladyPlanyDialogForm:headForm" />
+					
+				
+					<f:facet name="footer">
+						<div style="float:right">
+								<p:commandButton icon="fa fa-tint" value="Czyść"
+									actionListener="#{planyZaklad.clearAllFilters('zakladyPlanyDialogForm:zakladyPlanyDialog')}"
+									update=":zakladyPlanyDialogForm:zakladyPlanyDialog,:zakladyPlanyDialogForm:msgs" />
+								<p:commandButton icon="fa fa-save" value="Zapisz"
+									actionListener="#{planyZaklad.zapiszNowyPlan}"
+									update=":zakladyPlanyDialogForm:zakladyPlanyDialog,:zakladyPlanyDialogForm:msgs,:kalkulatorZajecForm:kalkulatorZajecTable,:kalkulatorZajecFormDlg:kalkulatorZajecTableDlg"
+									rendered="#{planyZaklad.miesiacWybrany!=null}"
+									oncomplete="PF('tablePlanyZaklad').filter(),PF('planyZakladyPlany').filter(),PF('planyZajeciaTableWidg').filter()"
+									onstart="PF('statusDialog').show()"
+									onsuccess="PF('statusDialog').hide()" />
+						</div>
+						<div style="clear:both"></div>
+					</f:facet>
+				
+					<p:column selectionMode="multiple" style="width:55px"
+						rendered="#{planyZaklad.miesiacWybrany!=null}" />
+					<p:column headerText="Id" style="width:70px">
+						<h:outputText value="#{pz.id_przedmiotTemat}" />
+					</p:column>
+					<p:column headerText="Przedmiot"
+						filterBy="#{pz.przedmiot.jm}/#{pz.przedmiot.js!=null?pz.przedmiot.js:''}#{pz.przedmiot.js!=null?'/':''}#{pz.nazwa}"
+						sortBy="#{pz.przedmiot.jm}/#{pz.przedmiot.js!=null?pz.przedmiot.js:''}#{pz.przedmiot.js!=null?'/':''}#{pz.nazwa}"
+						style="text-align:left">
+						<h:outputText
+							value="#{pz.przedmiot.jm}/#{pz.przedmiot.js!=null?pz.przedmiot.js:''}#{pz.przedmiot.js!=null?'/':''}#{pz.nazwa}"
+							style="font-weight:bold" />
+					</p:column>
+					<p:column headerText="Korel." sortBy="#{pz.korelacja}"
+						filterBy="#{pz.korelacja}"
+						filterValue="#{planyZaklad.filterValues['zakladyPlanyKorelacja']}"
+						style="width:70px">
+						<h:outputText value="#{pz.korelacja}" />
+					</p:column>
+					<p:column headerText="L. godzin" sortBy="#{pz.ileGodzin}"
+						filterBy="#{pz.ileGodzin}">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{pz.ileGodzin}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{pz.ileGodzin}">
+									<p:ajax event="change" listener="#{planyZaklad.liczeGodzinyPoprawione}"/>
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+					<p:column filterBy="#{planyZaklad.zakladToString(pz.zaklads)}"
+						headerText="Zakłady"
+						sortBy="#{planyZaklad.zakladToString(pz.zaklads)}"
+						filterValue="#{planyZaklad.filterValues['zakladyToString']}"
+						filterMatchMode="contains">
+						<f:facet name="filter" id="filtrCheckZaklad">
+							<p:selectOneMenu panelStyleClass="without-selectall" style="width:80%"
+								value="#{planyZaklad.filterValues['zakladyToString']}"
+								onchange="PF('tablePlanyZaklad').filter()" scrollHeight="250">
+								<f:selectItem itemLabel="Wszystkie" itemValue="#{null}"
+									nowSelectionOption="true" />
+								<f:selectItems value="#{planyZaklad.zakladyFilterSelect}" />
+							</p:selectOneMenu>
+						</f:facet>
+						<h:outputText value="#{planyZaklad.zakladToString(pz.zaklads)}" />
+					</p:column>
+					<p:column
+						filterBy="#{planyZaklad.specjalToString(pz.specjalizacjas)}"
+						headerText="Specjalizacje"
+						sortBy="#{planyZaklad.specjalToString(pz.specjalizacjas)}"
+						filterValue="#{planyZaklad.filterValues['specjalToString']}"
+						style="text-align:left" filterMatchMode="contains">
+						<f:facet name="filter" id="filtrCheckSpecjal">
+							<p:selectOneMenu panelStyleClass="without-selectall"
+								value="#{planyZaklad.filterValues['specjalToString']}" style="width:80%"
+								onchange="PF('tablePlanyZaklad').filter()" scrollHeight="250">
+								<f:selectItem itemLabel="Wszystkie" itemValue="#{null}"
+									nowSelectionOption="true" />
+								<f:selectItems value="#{planyZaklad.specjalFilterSelect}" />
+								<p:ajax event="change" listener="#{planyZaklad.ileDoplanowac}"
+									 update=":zakladyPlanyDialogForm:ileSelectedIleZapl"  />
+							</p:selectOneMenu>
+						</f:facet>
+						<h:outputText
+							value="#{planyZaklad.specjalToString(pz.specjalizacjas)}" />
+					</p:column>
+					<p:column headerText="Komentarz" sortBy="#{pz.komentarz}"
+						filterBy="#{pz.komentarz}">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{pz.komentarz}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{pz.komentarz}" onfocus="this.value=''">
+									<p:ajax event="change" update="zakladyPlanyDialogForm"/>
+								</p:inputText>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+		
+				</p:dataTable>
+
+			</h:form>
+
+		</p:dialog>
+
+
+		<!-- Powielenie analizy planow zajec w oknie dialogowym -->
+
+		<p:dialog header="Analiza Panów" id="kalkulatorZajecDlg"
+			widgetVar="dialogZakladyPlanyDlg" minimizable="true"
+			maximizable="true" width="950" position="left" height="80vh"
+			styleClass="dialogPlany my-tab-hover">
+			<h:form id="kalkulatorZajecFormDlg">
+				<p:dataTable class="dtPlanKalk" rowKey="#{kalzaj.key}"
+					id="kalkulatorZajecTableDlg" widgetVar="kalkZajTabWidgDlg"
+					var="kalzaj" value="#{planyZaklad.kalkulatorZajec}"
+					style="text-align:center">
+					<f:facet name="header">Analiza Planów</f:facet>
+					<p:columnGroup type="header">
+					<p:row>
+							<p:column rowspan="2" headerText="Grupa" style="width:11%" />
+							<p:column  headerText="Suma"/>
+							<p:column colspan="2" headerText="Zaplanowano"
+								rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowane')!=null}" />
+							<c:forEach items="#{planyZaklad.miesiaceDniPracujace}"
+								var="entry">
+								<p:column colspan="2"
+									headerText="#{planyZaklad.convertMonth(entry.key.substring(0,entry.key.indexOf('-')))}" />
+							</c:forEach>
+						</p:row>
+						<p:row>
+						<p:column headerText="Godz."/>
+							<p:column headerText="Godz."
+								rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowane')!=null}" />
+							<p:column headerText="%"
+								rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowane')!=null}" />
+							<c:forEach items="#{planyZaklad.miesiaceDniPracujace}"
+								var="entry">
+								<p:column headerText="Plan"></p:column>
+								<p:column headerText="Limit"></p:column>
+							</c:forEach>
+						</p:row>
+					</p:columnGroup>
+					<p:column style="text-align:left">
+						<f:facet name="footer">
+							<div style="float: right">Podsumowanie:</div>
+						</f:facet>
+						<h:outputText value="#{kalzaj.key}" />
+					</p:column>
+					<p:column>
+						<f:facet name="footer">
+							<h:outputText value="#{planyZaklad.wszystkieGodzinyGrupyFakt()}"
+								style="color:blue"
+								rendered="#{planyZaklad.wszystkieGodzinyGrupyFakt()!=null}" />
+						</f:facet>
+						<h:outputText
+							value="#{planyZaklad.wszystkieGodzinyGrupy.get(kalzaj.key)}"
+							style="color:blue"/>
+					</p:column>
+					<p:column
+						rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowane')!=null}">
+						<f:facet name="footer">
+							<h:outputText
+								value="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowane')}"
+								rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowane')!=null}" />
+						</f:facet>
+						<h:outputText
+							value="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get('0').get('zrealizowane')}"
+							rendered="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get('0').get('zrealizowane')!=null}" />
+					</p:column>			
+					<p:column
+						rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowane')!=null}">
+						<f:facet name="footer">
+							<h:outputText
+								value=" #{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowaneProcentyAll')}"
+								style="color:red"
+								rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get('0').get('zrealizowaneProcentyAll')!=null}" />
+						</f:facet>
+						<h:outputText
+							value=" #{planyZaklad.kalkulatorZajec.get(kalzaj.key).get('0').get('zrealizowaneProcentyAll')}"
+							style="color:red"
+							rendered="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get('0').get('zrealizowaneProcentyAll')!=null}" />
+					</p:column>
+					<c:forEach items="#{planyZaklad.miesiaceDniPracujace}" var="entry">
+						<p:column class="tdWyrozniony">
+							<f:facet name="footer">
+								<div
+									style="border-bottom: #{planyZaklad.godzninyNadzien(entry.key)!=null?'1px dashed lightgray':''}">
+									<h:outputText
+										value="#{planyZaklad.kalkulatorZajecPodsumowanie.get(entry.key).get('zrealizowane')}"
+										rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get(entry.key).get('zrealizowane')!=null}" />
+									<h:outputText
+										value=" (#{planyZaklad.kalkulatorZajecPodsumowanie.get(entry.key).get('doZrealizowaniaLimit')-planyZaklad.kalkulatorZajecPodsumowanie.get(entry.key).get('zrealizowane')})"
+										style="color:gray;margin:2px"
+										rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get(entry.key).get('zrealizowane')!=null}" />
+								</div>
+								<h:outputText
+									value="#{planyZaklad.godzninyNadzien(entry.key)} g/d"
+									rendered="#{planyZaklad.godzninyNadzien(entry.key)!=null}" />
+
+							</f:facet>
+							<h:outputText
+								value="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('zrealizowane')}"
+								rendered="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('zrealizowane')!=null}"
+								style="font-size:larger;font-weight:bold" />
+							<h:outputText
+								value="(#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('doZrealizowaniaLimit')-planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('zrealizowane')})"
+								style="color:gray;margin:2px"
+								rendered="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('doZrealizowaniaLimit')>0 and planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('zrealizowane')!=null}" />
+						</p:column>
+						<p:column>
+							<f:facet name="footer">
+								<h:outputText
+									value="#{planyZaklad.kalkulatorZajecPodsumowanie.get(entry.key).get('doZrealizowaniaLimit')}"
+									rendered="#{planyZaklad.kalkulatorZajecPodsumowanie.get(entry.key).get('doZrealizowaniaLimit')>0}" />
+							</f:facet>
+							<h:outputText
+								value="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('doZrealizowaniaLimit')}"
+								rendered="#{planyZaklad.kalkulatorZajec.get(kalzaj.key).get(entry.key).get('doZrealizowaniaLimit')>0}" />
+						</p:column>
+					</c:forEach>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="statusDialog" modal="true" appendTo="@(body)"
+			draggable="false" closable="false" resizable="false"
+			showHeader="false" style="background:whitesmoke;opacity:0.9">
+			<p:graphicImage name="/img/loadery/load1.gif" width="100" />
+		</p:dialog>
+	</ui:define>
+	<ui:define name="footer"></ui:define>
+</ui:composition>
+

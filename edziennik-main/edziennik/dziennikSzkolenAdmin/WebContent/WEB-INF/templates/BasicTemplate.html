@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	>
+<h:head>
+	<title><ui:insert name="title">eDziennik</ui:insert></title>
+	<h:outputStylesheet name="css/datePicker.css" />
+	<h:outputStylesheet name="css/BasicTemplate.css?92233" />
+	<h:outputStylesheet name="css/universal.css?743" />
+	<h:outputStylesheet name="css/ui_primefaces.css?123" />
+	<h:outputStylesheet name="css/topNav.css?97" />
+	<h:outputStylesheet library="font-awesome" name="css/all.css" />
+	<h:outputStylesheet name="css/style.css" />
+	<h:outputScript library="js" name="BasicTemplate.js?123" />
+	<h:outputScript library="js" name="logoutTimeout.js?723" />
+	<h:outputScript library="js" name="topNav.js?729577" />
+	<h:outputScript library="js" name="pl.js" />
+</h:head>
+<h:body onload="StartTimers();" onmousemove="ResetTimers();">
+	<p:layout fullPage="true">
+		<div id="timeout">
+			    <h1>Wylogowanie!</h1>
+			    <p>Za minutę system automatycznie wyloguje uzytkownika<br />
+			     Rusz kursorem aby temu zapobiec.</p>
+		</div>
+	<c:choose>
+	<c:when test="#{not empty logowanie.sessionLoged}">
+	<div id="main">
+  		<ui:include src="menuBar.html" />
+    <div class="row  wrapper">
+        <div class="col-12">			
+        		<div class="p-10 main">		
+	                  <ui:insert name="content" class="centerUnitInsert">
+									<h:outputText value="Strona w budowie" />
+					 </ui:insert>
+				</div>
+         </div>
+    </div>
+    </div>   
+ <div class="footer bg-secondary shadow">
+ 
+ </div>
+ <!-- 
+		<p:layoutUnit position="north"  styleClass="headerUnit shadow" style="border:none!important;border-bottom:1px solid lightgray!important">
+		<ui:include src="menuBar.html"/>
+
+		</p:layoutUnit>
+
+		<p:layoutUnit position="west" size="220" header="N a r z ę d z i a" resizable="true" closable="false" collapsible="true" styleClass="leftPane shadow" collapsed="true" effect="shake">		
+					<ui:insert name="leftPane"></ui:insert>
+				<h:form id="formDatapicker">
+						<p:calendar id="inline" value="#{calendarView.dateLeftPanel}" mode="inline" styleClass="myCalendarLeftPane" locale="pl"/>
+				</h:form>
+		
+		</p:layoutUnit>
+
+		<p:layoutUnit position="center" class="centerUnit">
+					<ui:insert name="content" class="centerUnitInsert">
+							<h:outputText value="Strona w budowie" />
+					</ui:insert>
+		</p:layoutUnit>
+
+		<p:layoutUnit position="south" size="35" styleClass="footerUnit" >
+			<ui:insert name="footer"></ui:insert>
+			<h:form>Server:
+				<p:clock pattern="dd.MM.yyyy HH:mm:ss" mode="server"/>
+				Klient:
+				<p:clock pattern="dd.MM.yyyy HH:mm:ss"/>
+			</h:form>
+				
+			
+		</p:layoutUnit>
+		-->
+</c:when>
+<c:otherwise>
+	<p:layoutUnit position="center" styleClass="centerUnit">
+			<div id="wyloguj">
+				<p:button value="Zaloguj się" outcome="/index.xhtml" />
+			</div>
+	</p:layoutUnit>
+</c:otherwise>
+</c:choose>
+	</p:layout>
+	
+</h:body>
+</html>

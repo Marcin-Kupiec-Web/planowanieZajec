@@ -1,0 +1,85 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/BasicTemplate.html">
+	<ui:define name="styleCSS"><h:outputStylesheet name="css/planZajec.css" /></ui:define>	
+		<ui:define name="content" >
+		<h:panelGroup>
+			
+				<!-- dialog do dodawania nowych specjalizacji -->
+		<p:dialog header="Rejestracja specjalizacji" id="rsd" widgetVar="dlgRejestracjaSpecjal"  modal="true"  appendTo="@(body)" style="background:white;">
+		<p:ajax event="close"  update="rsd" resetValues="true"/>
+				<h:form style="text-align:center" id="formDialogSpecjal">
+						<h:panelGrid columns="4" >
+							<h:outputLabel>Nazwa:</h:outputLabel>
+							 		 <p:inputText value="#{specjalizacje.nazwa}" required="true"/>
+							<h:outputLabel>Komentarz:</h:outputLabel>
+									 <p:inputTextarea value="#{specjalizacje.komentarz}" />
+							<h:outputLabel >Uprawnienia</h:outputLabel>
+									 	 <p:selectOneMenu value="#{specjalizacje.uprawnienia}" >
+												 		<f:selectItem itemValue="NIE" itemLabel="NIE"/>
+												 		<f:selectItem itemValue="TAK" itemLabel="TAK"/>
+											</p:selectOneMenu>
+						</h:panelGrid>
+						<p:commandButton  action="#{specjalizacje.addSpecjal()}" value="Zapisz" icon="ui-icon-calculator" update=":formSpecjal, formDialogSpecjal" style="margin:20px;width:90%;padding:5px"/>
+				</h:form>	
+		</p:dialog>
+	
+	<h:form id="formSpecjal" >
+				<p:growl id="msgs" showDetail="false"/>
+				<p:dataTable id="specjals" var="spec" value="#{specjalizacje.specjalList}" editable="true"
+				 style="text-align:center;width:90%;margin:auto" rowKey="#{spec.idSpecjalizacja}" class="shadow my-tab-hover my-tab">
+							<f:facet name="header">
+									<div class="headerPanel0">
+        									<h:outputLabel value="Specjalizacje" />
+        							</div>
+        							<div class="headerPanel">
+										<p:commandButton type="button" icon="ui-icon-calculator" value="Dodaj" rendered="#{poziomUprawnien eq 1 }" style="float:right" onclick="PF('dlgRejestracjaSpecjal').show();"/>
+									</div>
+								<div style="clear:both"></div>
+							</f:facet>
+							<p:ajax event="rowEdit" listener="#{specjalizacje.onRowEdit}" update=":formSpecjal:msgs"/>
+							<p:column headerText="Id" style="width:70px" rendered="#{poziomUprawnien eq 1}" sortBy="#{zak.idZaklad}">
+									<h:outputText  value="#{spec.idSpecjalizacja}"/>
+							</p:column>
+							<p:column headerText="Nazwa" sortBy="#{spec.nazwa}" style="text-align:left">
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText  value="#{spec.nazwa}"/></f:facet>
+									<f:facet name="input"><p:inputText  value="#{spec.nazwa}" required="true"  /></f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Komentarz" sortBy="#{spec.komentarz}" style="padding:7px;text-align:left">
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText  value="#{spec.komentarz}"/></f:facet>
+									<f:facet name="input"><p:inputTextarea  value="#{spec.komentarz}" /></f:facet>
+								</p:cellEditor>
+							</p:column>
+						
+							<p:column style="width:55px;text-align:center" rendered="#{poziomUprawnien eq 1}" >
+							<f:facet name="header"><i  class="fa fa-eraser"></i></f:facet>
+							<p:commandButton icon="fa fa-cut" actionListener="#{specjalizacje.remove}" update="@form"  class="buttDelete btn-sm"> 
+									<f:attribute name="removeRow" value="#{spec}" />
+									<p:confirm  header=" Uwaga, próbujesz usunac wpis!" message=" Czy potwierdzasz? " />
+							</p:commandButton>
+							</p:column>
+							<p:column style="width:55px;text-align:center" rendered="#{poziomUprawnien eq 1}">
+							<f:facet name="header"><i  class="fa fa-edit"></i></f:facet>
+								<p:rowEditor />
+							</p:column>
+						</p:dataTable>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+      							  <p:commandButton value="Tak" type="button" styleClass="ui-confirmdialog-yes bg-danger" icon="fa fa-check" />
+       							  <p:commandButton value="Nie" type="button" styleClass="ui-confirmdialog-no bg-primary" icon="fa fa-times" />
+   						</p:confirmDialog>  
+			</h:form>
+		</h:panelGroup>
+	 </ui:define>
+	<ui:define name="footer">
+	</ui:define>
+	
+</ui:composition>
+

@@ -1,0 +1,102 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/BasicTemplate.html">
+	<ui:define name="styleCSS"><h:outputStylesheet name="css/planZajec.css" /></ui:define>	
+		<ui:define name="content" >
+		<h:panelGroup  rendered="#{poziomUprawnien eq 1 or (poziomUprawnien eq 5) or (poziomUprawnien eq 6)}">
+
+				<!-- dialog do dodawania nowych zakładów -->
+		<p:dialog header="Rejestracja zakładu" id="rzd" widgetVar="dlgRejestracjaZaklad"  modal="true"  appendTo="@(body)" style="background:white;">
+		<p:ajax event="close" update="rzd" resetValues="true" />
+				<h:form style="text-align:center" id="formDialogZaklady">
+						<h:panelGrid columns="4" >
+							<h:outputLabel>Pełna nazwa:</h:outputLabel>
+							 		 <p:inputText value="#{zaklady.nazwaPelnaZakladu}" required="true"/>
+							<h:outputLabel>Skrót</h:outputLabel>
+									 <p:inputText value="#{zaklady.nazwaNowegoZakladu}" required="true"/>
+							<h:outputLabel>Komentarz / specjalizacja</h:outputLabel>
+									 <p:inputTextarea value="#{zaklady.komentarz}"/>
+							<h:outputLabel >Usunięty</h:outputLabel>
+									 	 <p:selectOneMenu value="#{zaklady.usuniety}" >
+												 		<f:selectItem itemValue="NIE" itemLabel="NIE"/>
+												 		<f:selectItem itemValue="TAK" itemLabel="TAK"/>
+											</p:selectOneMenu>
+						</h:panelGrid>
+						<p:commandButton  action="#{zaklady.addZaklad()}" value="Zapisz" icon="ui-icon-calculator" update=":formZaklady, formDialogZaklady" style="margin:20px;width:90%;padding:5px"/>
+				</h:form>	
+		</p:dialog>
+	
+	<h:form id="formZaklady" >
+				<p:growl id="msgs" showDetail="false"/>
+				<p:dataTable id="zaklady" var="zak" value="#{zaklady.zakladList}" editable="true" 
+				style="text-align:center;width:90%;margin:auto" rowKey="#{zak.idZaklad}" class="shadow my-tab-hover my-tab">
+							<f:facet name="header">
+									<div class="headerPanel0">
+        									<h:outputLabel value="Zakłady" />
+        							</div>
+        							<div class="headerPanel">
+										<p:commandButton type="button" icon="ui-icon-calculator" value="Dodaj" rendered="#{poziomUprawnien eq 1}" style="float:right" onclick="PF('dlgRejestracjaZaklad').show();"/>
+									</div>
+								<div style="clear:both"></div>
+							</f:facet>
+							<p:ajax event="rowEdit" listener="#{zaklady.onRowEdit}" update=":formZaklady:msgs"/>
+							<p:column headerText="Id" style="width:70px" rendered="#{poziomUprawnien eq 1}" sortBy="#{zak.idZaklad}">
+									<h:outputText  value="#{zak.idZaklad}"/>
+							</p:column>
+							<p:column headerText="Pełna nazwa" sortBy="#{zak.nazwaPelna}" style="text-align:left">
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText  value="#{zak.nazwaPelna}"/></f:facet>
+									<f:facet name="input"><p:inputText  value="#{zak.nazwaPelna}" required="true"  /></f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Nazwa krótka" sortBy="#{zak.nazwaSkrot}" style="width:200px">
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText  value="#{zak.nazwaSkrot}"/></f:facet>
+									<f:facet name="input"><p:inputText  value="#{zak.nazwaSkrot}" required="true"  /></f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Komentarz" sortBy="#{zak.komentarz}" style="text-align:left">
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText  value="#{zak.komentarz}"/></f:facet>
+									<f:facet name="input"><p:inputTextarea  value="#{zak.komentarz}" /></f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column headerText="Usunięty" sortBy="#{zak.usuniety}" style="width:100px">
+								<p:cellEditor>
+									<f:facet name="output"><h:outputText  value="#{zak.usuniety}"/></f:facet>
+									<f:facet name="input"> <p:selectOneMenu value="#{zak.usuniety}" >
+												 				<f:selectItem itemValue="NIE" itemLabel="NIE"/>
+												 				<f:selectItem itemValue="TAK" itemLabel="TAK"/>
+															</p:selectOneMenu>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column style="width:55px;text-align:center" rendered="#{poziomUprawnien eq 1}" >
+							<f:facet name="header"><i  class="fa fa-eraser"></i></f:facet>
+							<p:commandButton icon="fa fa-cut" actionListener="#{zaklady.remove}" update="@form" class="buttDelete btn-sm"> 
+									<f:attribute name="removeRow" value="#{zak}" />
+									<p:confirm  header=" Uwaga, próbujesz usunac zakład!" message=" Czy potwierdzasz? " /> 
+							</p:commandButton>
+							</p:column>
+							<p:column style="width:55px;text-align:center" rendered="#{poziomUprawnien eq 1}">
+							<f:facet name="header"><i  class="fa fa-edit"></i></f:facet>
+								<p:rowEditor />
+							</p:column>
+						</p:dataTable>
+							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+      							  <p:commandButton value="Tak" type="button" styleClass="ui-confirmdialog-yes bg-danger" icon="fa fa-check" />
+       							  <p:commandButton value="Nie" type="button" styleClass="ui-confirmdialog-no bg-primary" icon="fa fa-times" />
+   							 </p:confirmDialog>  
+			</h:form>
+	</h:panelGroup>
+	 </ui:define>
+	<ui:define name="footer">
+	</ui:define>
+	
+</ui:composition>
+

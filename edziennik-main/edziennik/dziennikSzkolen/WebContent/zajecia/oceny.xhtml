@@ -1,0 +1,530 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/BasicTemplate.html">
+	
+	<ui:define name="leftPane"></ui:define>
+		<ui:define name="subMenuCont"><ui:include src="/WEB-INF/templates/zajecia/submenuZajecia.html"/></ui:define>
+		<ui:define name="grupaSzkol"><ui:include src="/WEB-INF/templates/zajecia/plutonWybor.html"/></ui:define>
+		<ui:define name="akcja">
+				<p:ajax event="change" listener="#{oceny.init}" update="@([id$=wyborPrzedmiotu]), contentOutputPanel"/>
+		</ui:define>
+		<ui:define name="jmJs"><ui:include src="/WEB-INF/templates/zajecia/jmJs.html"/> </ui:define>
+	<ui:define name="content" id="content">
+	
+	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="my-dialog">
+        <p:commandButton value="Tak" type="button" styleClass="ui-confirmdialog-yes bg-danger" icon="fa fa-check" />
+        <p:commandButton value="Nie" type="button" styleClass="ui-confirmdialog-no bg-primary" icon="fa fa-times" />
+    </p:confirmDialog>   
+    
+			<!-- dialog do dodawania nowej kolumny ocen -->
+		<p:dialog header="Rejestracja nowej kolumny ocen" id="rko" widgetVar="dlgRejestracjaKolumny"  modal="true"  appendTo="@(body)" 
+		style="background:white" width="800" rendered="#{logowanie.poziomUprawnien!='7'}" styleClass="my-dialog bg-light">
+		<p:ajax event="close"  update="rko" listener="#{oceny.resetFormKolumn}" resetValues="true"/>
+				<h:form id="dfo" style="text-align:center">
+				<div class="ui-fluid shadow bg-white" style="overflow:auto;max-height:75vh">
+									    <div class="ui-g" style="text-align:left">
+		                						<div class="ui-g-6 ui-sm-12">
+		                						<p:outputLabel for="zadanie" value="Zadanie" />
+		                							<p:selectOneMenu id="zadanie" value="#{oceny.zadanieWybrane}" >
+														 <f:selectItems value="#{oceny.zadanie}"/>
+													</p:selectOneMenu>
+		                						</div>
+		                						<div class="ui-g-6 ui-sm-12">
+		                						<p:outputLabel for="naglowek" value="Nagłówek" />
+		                							<p:inputTextarea id="naglowek" value="#{oceny.naglowek}" required="true" style="width:100%;margin:auto"/>
+		                						</div>
+		                						<div class="ui-g-12">
+		                						<p:outputLabel for="komentarz" value="Komentarz" /><br/>
+		                							<p:inputTextarea id="komentarz" value="#{oceny.komentarzKolumna}"  style="width:100%;margin:auto"/>
+		                						</div>
+		                						<div class="ui-g-6 ui-sm-6" style="text-align:center">
+		                						<p:outputLabel for="kolor" value="Kolor" /><br />
+		                							<div style="width:50px!important;display:inline-block">
+		                									<p:colorPicker id="kolor" value="#{oceny.kolorKolumny}"/>
+		                							</div>
+		                						</div>
+		                						<div class="ui-g-6 ui-sm-6" style="text-align:center">
+		                						<p:outputLabel for="srednia" value="Licz do średniej" /><br/>
+		                									<p:selectBooleanButton id="srednia" value="#{oceny.doSredniej}" onLabel="Tak" offLabel="Nie" style="width:63px"/>
+		                						</div>
+		                						<div class="ui-g-6 ui-sm-12">
+		                									<p:commandButton   value="Czyść" class="shadow" resetValues="true" action="#{oceny.resetFormKolumn}" icon="fa fa-square" update=":dfo" style="width:100%;padding:5px"/>
+		                						</div>
+		                						<div class="ui-g-6 ui-sm-12">
+		                									<p:commandButton  action="#{oceny.addKolumna}" class="shadow" value="Zapisz" icon="ui-icon-calculator" update=":formOceny, :dfo" style="width:100%;padding:5px"/>
+		                						</div>
+		                				</div>
+		         </div>
+				
+				</h:form>	
+		</p:dialog>
+	
+				<!-- dialog do uaktualnianiakolumny -->
+		<p:dialog header="Wybrana kolumna JM:#{oceny.jmWybrana} JS:#{oceny.jsWybrana}" id="uko" widgetVar="dlgUpdateKolumny"  modal="true"  appendTo="@(body)" width="800" 
+		rendered="#{logowanie.poziomUprawnien!='7'}" styleClass="my-dialog bg-light">
+		<p:ajax event="close"  update="uko" resetValues="true"/>
+				<h:form id="dfou" >
+				<div class="ui-fluid shadow bg-white" style="overflow:auto;max-height:75vh">
+									    <div class="ui-g" style="text-align:left">
+		                						<div class="ui-g-6 ui-sm-12">
+		                						<p:outputLabel for="zadanie" value="Zadanie" />
+		                							<p:selectOneMenu id="zadanie" value="#{oceny.wybranaKolumnaUpdate.zadanie}" required="true">
+														 <f:selectItems value="#{oceny.zadanie}"/>
+													</p:selectOneMenu>
+		                						</div>
+		                						<div class="ui-g-6 ui-sm-12">
+		                						<p:outputLabel for="naglowek" value="Nagłówek" />
+		                							<p:inputTextarea id="naglowek" value="#{oceny.wybranaKolumnaUpdate.naglowek}" required="true" 
+		                											style="width:100%;margin:auto"/>
+		                						</div>
+		                						<div class="ui-g-12">
+		                						<p:outputLabel for="komentarz" value="Komentarz" /><br/>
+		                							<p:inputTextarea id="komentarz" value="#{oceny.wybranaKolumnaUpdate.komentarz}"  style="width:100%;margin:auto"/>
+		                						</div>
+		                						<div class="ui-g-3 ui-sm-6">
+		                						<p:outputLabel for="kolor" value="Kolor" /><br />
+		                							<div style="width:50px!important;display:inline-block">
+		                									<p:colorPicker id="kolor" value="#{oceny.wybranaKolumnaUpdate.kolor}"/>
+		                							</div>
+		                								
+		                						</div>
+		                						<div class="ui-g-3 ui-sm-6">
+		                						<p:outputLabel for="kolorno" value="Brak koloru" /> <br />
+		                							   <p:selectBooleanCheckbox id="kolorno"  value="#{oceny.brakKoloru}">
+									   								<f:ajax listener="#{oceny.blankKolor}" />
+									   					</p:selectBooleanCheckbox>
+		                						</div>
+		                						<div class="ui-g-6 ui-sm-12">
+		                						<p:outputLabel for="srednia" value="Licz do średniej" /><br/>
+		                									<p:selectBooleanButton id="srednia" value="#{oceny.wybranaKolumnaUpdate.doSredniej}" onLabel="Tak" offLabel="Nie" style="width:63px"/>
+		                						</div>
+		                						<div class="ui-g-3 ui-sm-12">
+		                									<p:commandButton  action="#{oceny.removeKolmna}" class="shadow bg-danger" value="Usuń" 
+		                									icon="ui-icon-trash" update=":formOceny, :dfo" oncomplete="#{oceny.editTem}?PF('dlgUpdateKolumny').hide():''" style="width:100%;padding:5px"/>
+		                						</div>
+		                						<div class="ui-g-9 ui-sm-12">
+		                									<p:commandButton  action="#{oceny.onRowEditUpdatecol}" class="shadow" value="Zapisz" 
+		                									icon="ui-icon-calculator" update=":formOceny, :dfo" style="width:100%;padding:5px"/>
+		                						</div>
+		                				</div>
+		         </div>
+				
+				</h:form>	
+		</p:dialog>
+	
+		<!-- dialog do dodawania nowej oceny -->
+		<p:dialog header="#{oceny.sluchaczWybranyOceny.nazwiskoSluchacz} #{oceny.sluchaczWybranyOceny.imieSluchacz} / #{oceny.wybranaKolumnaOceny.zadanie} #{oceny.wybranaKolumnaOceny.naglowek} " id="rno" widgetVar="dlgEdycjaOceny"  modal="true"  
+		appendTo="@(body)" width="700"  styleClass="my-dialog bg-light" rendered="#{logowanie.poziomUprawnien!='7'}" resizable="false">
+		<p:ajax event="close"  update="rno" listener="#{oceny.resetFormDeo}"/>
+				<h:form id="deo" >
+					<p:outputPanel rendered="#{(oceny.sluchaczWybranyOceny.usuniety eq 'NIE') and ((logowanie.poziomUprawnien lt 5 and !oceny.checkColumnOkres) or (logowanie.poziomUprawnien lt 5 and oceny.checkColumnOkres and oceny.ocenyEditList.size()==0))}"
+					class="bg-white">
+										<div class="ui-fluid shadow" style="overflow:auto;max-height:75vh">
+										    <div class="ui-g" style="text-align:left">
+			                						<div class="ui-g-6 ui-sm-12">
+															<p:outputLabel for="sluchaczOcena" value="Słuchacz:" />
+		                												<p:selectCheckboxMenu id="sluchaczOcena" value="#{oceny.sluchaczes}" label="#{oceny.sluchaczWybranyOceny.imieSluchacz.charAt(0)}.#{oceny.sluchaczWybranyOceny.nazwiskoSluchacz}"
+																								class="my-ui-selectcheckboxmenu-trigger-noMulti" panelStyle="width:40%" style="width:100%">
+																				 <f:selectItems value="#{oceny.plutonWybrany.sluchaczes}" var="sl" itemValue="#{sl.idS}"  
+																				 				itemLabel="#{sl.nazwiskoSluchacz} #{sl.imieSluchacz}"/>
+																		</p:selectCheckboxMenu>
+													</div>
+													<div class="ui-g-6 ui-sm-12">
+															<p:outputLabel for="ocenaNowa" value="Ocena"/> <br />
+																<p:selectOneMenu id="ocenaNowa" value="#{oceny.nowaOcena}" panelStyle="max-width:100px">
+															   <f:selectItems value="#{oceny.ocenyList}"/>
+															</p:selectOneMenu>
+													</div>
+													<div class="ui-g-12">
+		                										<p:outputLabel for="komentarzOcenaNowa" value="Komentarz"/>
+																<p:inputTextarea id="komentarzOcenaNowa" value="#{oceny.nowaOcenaKomentarz}" style="width:100%;margin:auto"/>
+		                						  </div>
+		                						  <div class="ui-g-3 ui-sm-6" style="text-align:center">
+															<p:outputLabel for="kolorOcenaNowa" value="Kolor"/><br />
+															<div style="width:50px!important;display:inline-block">
+																<p:colorPicker id="kolorOcenaNowa" value="#{oceny.nowaOcenaKolor}" />
+															</div>
+												 </div>
+												 <div class="ui-g-9 ui-sm-6">
+															<p:outputLabel for="dataOcenaNowa" value="Data"/> <br />
+															<p:calendar id="dataOcenaNowa" value="#{oceny.nowaOcenaData}" locale="pl"  pattern="dd-MM-yyyy" 
+																		effect="fade" required="true"/>
+											
+												</div>
+												<div class="ui-g-12">
+		                									<p:commandButton value="Zapisz" actionListener="#{oceny.addNowaOcena()}" style="width:100%; padding:5px" class="shadow" update=":formOceny" />
+		                						</div>
+											</div>
+										</div>
+										
+							</p:outputPanel>
+				</h:form>	<br />
+		</p:dialog>
+		
+		
+		<!-- dialog do uaktualniania oceny -->
+		<p:dialog header="Popraw Ocenę. #{oceny.poprawaOceny.sluchacze.imieSluchacz}" id="ocNowa" widgetVar="dlgOcNowa"  modal="true"  
+		appendTo="@(body)" width="700"  styleClass="my-dialog bg-light" rendered="#{logowanie.poziomUprawnien!='7'}" resizable="false">
+			<p:ajax event="close"  update="ocNowa" resetValues="true" listener="#{oceny.resetFormDeo}"/>
+				<h:form id="ocenaNowaForm" >
+					<p:outputPanel
+					class="bg-white">
+										<div class="ui-fluid shadow" style="overflow:auto;max-height:75vh">
+										    <div class="ui-g" style="text-align:left">
+			                					
+													<div class="ui-g-8 ui-sm-6">
+															<p:outputLabel for="ocenaPoprawaWartosc" value="Ocena"/> <br />
+																<p:selectOneMenu id="ocenaPoprawaWartosc" value="#{oceny.poprawaOceny.ocenaWartosc}" panelStyle="max-width:100px">
+															   <f:selectItems value="#{oceny.ocenyList}"/>
+															</p:selectOneMenu>
+													</div>
+													  <div class="ui-g-4 ui-sm-6" style="text-align:center">
+															<p:outputLabel for="kolorOcenaPoprawaWartosc" value="Kolor"/><br />
+															<div style="width:50px!important;display:inline-block">
+																<p:colorPicker id="kolorOcenaPoprawaWartosc" value="#{oceny.poprawaOceny.kolor}" />
+															</div>
+												 </div>
+													<div class="ui-g-6 ui-sm-12">
+		                										<p:outputLabel for="komentarzOcenaPoprawa" value="Komentarz"/>
+																<p:inputTextarea id="komentarzOcenaPoprawa" value="#{oceny.poprawaOceny.komentarz}" style="width:100%;margin:auto"/>
+		                						  </div>
+		                						
+												 <div class="ui-g-6 ui-sm-12">
+															<p:outputLabel for="dataOcenaPoprawa" value="Data"/> <br />
+															<p:calendar id="dataOcenaPoprawa" value="#{oceny.poprawaOceny.dataOcena}" locale="pl"  pattern="dd-MM-yyyy" 
+																		effect="fade" required="true"/>
+											
+												</div>
+												<div class="ui-g-4 ui-sm-12">
+												<p:commandButton value="Usuń"  actionListener="#{oceny.removeOcenaRowEx(oceny.poprawaOceny)}"
+											 		update=":formOceny:msgs,:formOceny:ocenyTableId"  class="bg-danger shadow" style="padding:5px" 
+											 		 oncomplete="PF('dlgOcNowa').hide()" >
+													<p:confirm  header=" Uwaga, próbujesz usunąć ten wpis!" message=" Czy potwierdzasz? " /> 
+													</p:commandButton>
+												</div>											
+												<div class="ui-g-8 ui-sm-12">
+		                									<p:commandButton value="Zapisz" actionListener="#{oceny.onRowEditUpdateOc}" 
+		                									update=":formOceny:msgs,:formOceny:ocenyTableId" 
+		                									style="width:100%; padding:5px" class="shadow"  />
+		                						</div>
+											</div>
+										</div>
+										
+							</p:outputPanel>
+				</h:form>	<br />
+		</p:dialog>
+	<p:outputPanel deferred="true" id="contentOutputPanel" style="overflow:auto">	
+		<p:panel id="contentTrescZajecia" rendered="#{logowanie.poziomUprawnien le 4}">
+			<h:form id="formOceny" >
+				<p:growl id="msgs" showDetail="false"/>
+				
+			<p:dataTable id="ocenyTableId" var="oc" value="#{oceny.sluchaczeSorted}" tableStyle="width:auto!important"
+				rendered="#{oceny.przedmiot!=null and (oceny.sluchaczeSorted.size()>0) and (not empty js)}"  
+				rowKey="#{oc.idS}"  expandedRow="#{oc.idS==oceny.wybranySluchacz}" rowExpandMode="#{oceny.editTem?'single':'multiple'}"
+				rowStyleClass="#{oc.usuniety=='TAK' ? 'usunietyRow' : ''}" class="shadow resizableColumn tableOceny" style="background:whitesmoke" > 
+							<f:facet name="header">
+							  <h:commandLink style="float:left;position:relative;top:5px" rendered="false">
+										<i  class="fa fa-file-excel" style="font-size:larger;color:#a66c20"></i>
+											<p:dataExporter type="xls" target="ocenyTableId" fileName="ocenyWydruk"/>
+							</h:commandLink>
+								<h:outputLabel value="Oceny" style="color:gray;display:inline;float:left;position:relative;margin-left:1%"/> 
+							<div style="float:right;display:inline-block">						
+									 
+								<p:selectBooleanButton id="edit" class="shadow" value="#{oceny.editTem}" onIcon="fa fa-lock-open" offIcon="fa fa-lock"
+       												rendered="#{logowanie.poziomUprawnien le 4}" style="width:50px">
+        					 		<p:ajax update=":formOceny" />
+        					 </p:selectBooleanButton>
+        					 
+        					 </div>		 
+								<div style="clear:both"></div>
+							</f:facet>
+							<f:facet name="footer">
+							
+							<div style="float:right;display:inline-block;color:gray;font-weight:normal;font-size:14px;text-align:left;background:whitesmoke;border-radius:5px;padding:5px;margin:3px;border:1px solid lightgray">
+							Średnie: 1-wszystkie oceny bieżące, 2-tylko poprawione<br />
+							Oceny okresowe: 1,2,3 (terminy)
+							</div>
+							<div style="clear:both"></div>
+							</f:facet>
+						
+							 <p:ajax event="rowToggle" listener="#{oceny.setExpandedRowElement(oc.idS)}" update=":formOceny:msgs"/>
+							<p:columnGroup type="header">
+								<p:row>
+									<p:column rowspan="2" headerText="" style="width:34px"/>
+									<p:column rowspan="2" headerText="Nr" style="width:35px"/>
+									<p:column rowspan="2" headerText="Słuchacz" class="imieNazwiskoSluchacz"/>
+									<p:column  colspan="#{oceny.naglowekList.size()}" 
+												style="width:#{oceny.naglowekList.size()*96}px!important;" headerText="Bieżące" />
+									<p:column  rowspan="2" coslpan="1" headerText="Dodaj" class="tdResponsive">
+									<f:facet name="header">
+										<p:commandButton type="button"  value="+" 
+												rendered="#{logowanie.poziomUprawnien lt 5 and oceny.editTem}" 
+												class="shadow" onclick="PF('dlgRejestracjaKolumny').show()" 
+												style="background:whitesmoke;border:none;color:gray;font-size:larger;
+												padding:0px"/>
+									</f:facet>
+									</p:column>
+									<p:column  rowspan="2" coslpan="1" headerText="Śr.1" style="width:50px" priority="3"/>
+									<p:column  rowspan="2" coslpan="1" headerText="Śr.2" style="width:50px" priority="3"/>
+									<p:column colspan="3" headerText="Okresowe" style="width:120px" priority="2" />
+								</p:row>
+								<p:row>
+								<c:forEach items="#{oceny.naglowekList}" var="entry">
+										<p:column id="ocenyTableIdColumn" style="text-align:left;background: ##{entry.kolor}" >
+										<f:facet name="header" >
+										<div >
+										<nobr>
+										<h:outputText   value="#{entry.zadanie}" /><br/>
+										<p:commandLink id="naglowek" actionListener="#{oceny.kolumnaUpdate(entry)}" 
+														onmouseover="$(this).find('.naglowekIcon').css({'color':'coral'})" 
+														onmouseout="$(this).find('.naglowekIcon').css({'color':'blue'})"
+														oncomplete="#{oceny.editTem}?PF('dlgUpdateKolumny').show():''" update=":dfou,uko" 
+														style="color:#{!entry.usunieta?'':'lightgray'}" 
+														rendered="#{logowanie.poziomUprawnien lt 5 and (logowanie.idUsers==entry.idWpisal) and oceny.editTem}">												
+												<i class="#{!entry.usunieta?'fa fa-edit':'fa fa-trash-alt'} naglowekIcon" style="font-size:14px;padding:0px;width:15px;cursor:pointer;color:blue;margin-right:5px" ></i>												
+										</p:commandLink>
+										<h:outputText   value="#{entry.naglowek}" title="#{entry.naglowek}" />		
+										</nobr>
+										</div>
+												<p:tooltip id="naglowektt" for="ocenyTableIdColumn" position="top"/>
+										</f:facet>
+										</p:column>
+								</c:forEach>
+									<p:column headerText="Brak" style="color:lightgray;text-align:left" rendered="#{oceny.naglowekList.size()==0}" />
+											<c:forEach items="#{oceny.naglowekListOkresowe}" var="entry">
+													<p:column id="ocenyTableIdColumnOkr" priority="2">
+													<f:facet name="header">
+													<nobr>
+														<i class="fa fa-calendar-alt" style="font-size:12px;padding:0px;width:15px" ></i>
+														<sub><h:outputText   value="#{entry.naglowek}" title="#{entry.naglowek}" style="color:brown;font-weight:bold"/></sub>	
+													</nobr>
+													</f:facet>
+										</p:column>
+											</c:forEach>
+								</p:row>
+							</p:columnGroup>
+							<p:column >
+								<p:rowToggler />
+							</p:column>
+							<p:column headerText="Nr">
+									<h:outputText  value="#{oc.nrDziennik}"/>
+							</p:column>
+							<p:column style="text-align:left" headerText="Słuchacz #{oceny.plutonWybrany.oznaczenieSzkolenia}" >
+									<h:outputText id="sluchaczn" value="#{oc.nazwiskoSluchacz}" style="font-weight:bold;text-decoration:#{oc.usuniety=='TAK'?'line-through':''}"/>
+									<h:outputText id="sluchaczi" value=" #{oc.imieSluchacz}" style="text-decoration:#{oc.usuniety=='TAK'?'line-through':''}"/>
+										<p:tooltip for="sluchaczi" value="#{oc.nazwiskoSluchacz} #{oc.imieSluchacz}" position="top" />
+										<p:tooltip for="sluchaczn" value="#{oc.nazwiskoSluchacz} #{oc.imieSluchacz}" position="top" />
+							</p:column>
+							<c:forEach items="#{oceny.naglowekList}" var="entry" >
+								<p:column  style="text-align:left;background: ##{entry.kolor}" id="cellColumn" headerText="#{entry.naglowek}" >
+								 
+									  <p:outputPanel id="cellCl" styleClass="cellUpd"  style="width:100%;height:100%;padding-top:4px;padding-bottom:4px;cursor:pointer">
+									  		
+									   		<ui:repeat var="ocsp" value="#{oceny.ocenyKolumnaSluchaczacz(entry,oc.idS)}" varStatus="sts">
+													<h:outputText id="cell"  value="#{ocsp.ocenaWartosc} " style="font-family:times;font-size:15px;margin:2px;background:##{ocsp.kolor};
+													padding:0px 5px 0px 5px;border:1px solid #b7b7b7;border-radius:3px;display:inline-block" />
+													
+													<p:tooltip for="cell" id="tooltipCell" position="top" rendered="#{ocsp.ocenaWartosc!=null}">
+															<h:outputText value="#{ocsp.idUzytkownik.imieUsers} #{ocsp.idUzytkownik.nazwiskoUsers} / " />
+															<h:outputText value="#{ocsp.dataOcena}">
+																<f:convertDateTime pattern="dd-MM-yyyy"/>
+															</h:outputText><br />
+															<h:outputText value="#{ocsp.komentarz}" style="font-style:italic" />
+													</p:tooltip>
+											</ui:repeat>
+												  <p:commandLink  actionListener="#{oceny.ocenyClickCell(oceny.ocenyKolumnaSluchaczacz(entry,oc.idS),oc,entry,false)}" 
+																  oncomplete="#{oceny.editTem}?PF('dlgEdycjaOceny').show():''" 
+																  style="text-decoration:none;margin:auto" update="rno" rendered="#{oceny.editTem}">
+								  						<h:outputText id="cell"  value="+" style="font-family:times;font-size:15px;margin:2px;background:##{ocsp.kolor};
+																		padding:0px 5px 0px 5px;border:1px solid #b7b7b7;border-radius:3px;display:inline-block" />
+								 					 </p:commandLink>
+									  </p:outputPanel>
+								</p:column>
+							</c:forEach>
+								<p:column >
+									<h:outputText  value=""/>
+							</p:column>
+							<p:column rendered="#{oceny.naglowekList.size()==0}" priority="3">
+									<h:outputText  value=""/>
+							</p:column>
+								<p:column style="text-align:center" priority="3">
+									<h:outputText id="cellUpdSr" value="#{oceny.ocenyKolumnaSluchaczaczSrednia(oc.idS).get(0)}" />
+								</p:column>
+								<p:column style="text-align:center" priority="3">
+									<h:outputText id="cellUpdSr2" value="#{oceny.ocenyKolumnaSluchaczaczSrednia(oc.idS).get(1)}" />
+								</p:column>
+								<c:forEach items="#{oceny.naglowekListOkresowe}" var="entry" >
+								<p:column priority="2" style="text-align:center">
+								    		<ui:repeat var="ocspo" value="#{oceny.ocenyKolumnaSluchaczacz(entry,oc.idS)}" varStatus="sts">
+													<h:outputText id="cellOkr" value="#{ocspo.ocenaWartosc}" style="font-family:times;font-size:15px;background:##{ocspo.kolor};
+													padding:0px 5px 0px 5px;border:1px solid #b7b7b7;border-radius:3px" />
+													
+													<p:tooltip for="cellOkr" id="tooltipCellOkr" position="top" rendered="#{ocspo.ocenaWartosc!=null}">
+															<h:outputText value="#{ocspo.idUzytkownik.imieUsers} #{ocspo.idUzytkownik.nazwiskoUsers} / " />
+															<h:outputText value="#{ocspo.dataOcena}">
+																<f:convertDateTime pattern="dd-MM-yyyy"/>
+															</h:outputText><br />
+															<h:outputText value="#{ocspo.komentarz}" style="font-style:italic" />
+													</p:tooltip>
+											</ui:repeat>
+								  <p:commandLink id="cellClOkr" styleClass="cellUpdOkr" actionListener="#{oceny.ocenyClickCell(oceny.ocenyKolumnaSluchaczacz(entry,oc.idS),oc,entry,true)}" 
+								  oncomplete="PF('dlgEdycjaOceny').show()" style="text-decoration:none;margin:auto" update="rno"
+								  rendered="#{oceny.ocenyKolumnaSluchaczacz(entry,oc.idS).size()==0 and oceny.editTem}">
+									  <h:outputText value="+"  style="font-family:times;font-size:15px;background:white;
+													padding:0px 5px 0px 5px;border:1px solid #b7b7b7;border-radius:3px;margin:auto">
+									  </h:outputText>
+								 </p:commandLink>
+								</p:column>
+							</c:forEach>
+							<p:rowExpansion >
+								<p:dataTable id="ocenyTableRowExpId" var="ocre" value="#{oceny.ocenyWykazRowExp(oc.idS)}" emptyMessage="Brak wyników" 
+											editable="true" rowStyleClass="#{ocre.ocenyNglowek.okresowa ? 'usunietyRow' : ''}" 
+											style="text-align:center;width:100%" reflow="true">
+									<p:column headerText="Ocena: " style="font-weight:bold" priority="1">
+									
+									 <h:outputText value="#{ocre.ocenaWartosc}" style="font-family:times;font-size:15px;margin:2px;
+									 				background:##{ocre.kolor};
+													padding:0px 5px 0px 5px;border:1px solid #b7b7b7;border-radius:3px;display: inline-block"/>
+									 	
+									</p:column>
+									<p:column headerText="Opis: "  priority="1">
+									<h:outputText value="#{ocre.ocenyNglowek.zadanie}" style="font-weight:bold;color:gray" />
+										<h:outputText value=" #{ocre.ocenyNglowek.naglowek}" />
+										<h:outputText value="#{ocre.ocenyNglowek.okresowa?' - termin':''}" />
+									</p:column>								
+									<p:column headerText="Komentarz: "  priority="1">
+										<h:outputText  value="#{ocre.ocenyNglowek.okresowa?'Ocena okresowa. ':''}"/>
+										<h:outputText  value="#{ocre.komentarz}"/>
+									 			
+									</p:column>
+									<p:column headerText="Wpisał: " priority="2">
+										<h:outputText value="#{ocre.idUzytkownik.imieUsers} #{ocre.idUzytkownik.imieUsers}" />
+									</p:column>
+									<p:column headerText="Data: " priority="3">
+								 					<h:outputText  value="#{ocre.dataOcena}">
+												<f:convertDateTime pattern="dd-MM-yyyy"/>
+											</h:outputText>
+									</p:column>
+									<p:column headerText="Wpisano: " priority="2">
+										<h:outputText value="#{ocre.dataWpisu}">
+												<f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+										</h:outputText>
+									</p:column>
+									<p:column  headerText="Kolor: "  priority="4">
+								 				<p:outputLabel value="#{ocre.kolor}"
+								 				style="padding:0px 10px 0px 10px;border:1px solid lightgray;border-radius:3px;margin:auto;background:##{ocre.kolor};color:gray"/>
+								 				<div style="clear:both"></div>
+								 	
+								</p:column>
+								<p:column priority="1"
+								rendered="#{(oc.usuniety eq 'NIE') and (logowanie.poziomUprawnien lt 5) and oceny.editTem}">
+										<f:facet name="header"><i  class="fa fa-edit"></i></f:facet>
+												<p:commandButton icon="fa fa-edit" action="#{oceny.wybranaOcenaPoprawa(ocre)}" process="@this" 
+												rendered="#{logowanie.idUsers==ocre.idUzytkownik.idUsers and (ocre.sluchacze.usuniety eq 'NIE')}"
+												class="shadow" oncomplete="PF('dlgOcNowa').show()" update=":ocenaNowaForm,ocNowa"  style="width:60px" />
+								</p:column>
+									
+								</p:dataTable>
+							</p:rowExpansion>
+					</p:dataTable>
+					<p:blockUI block="ocenyTableId" trigger="ocenyTableId" /> 				
+			</h:form>
+				
+</p:panel>
+
+<p:panel id="contentTrescZajeciaSluchacz" rendered="#{logowanie.poziomUprawnien eq'7'}" style="width:98%;margin:auto;margin-top:10px;border:none">
+
+	<h:form id="form">
+		<p:dataTable id="sluchaczeOceny" var="so" value="#{oceny.ussluch.sluchacze.pluton.idKurs.przedmiots}" emptyMessage="Brak wyników" 
+		class="obecnoscListTable" 
+		style="text-align:center" paginator="true" rows="20" 
+		paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+		rowsPerPageTemplate="20,50,100,200,300" sortBy="#{so.jm},#{so.js}">
+			
+				<p:column style="width:17px;text-align:center" >
+					<p:rowToggler  />
+				</p:column>
+				<p:column headerText="#{oceny.ussluch.sluchacze.pluton.idKurs.jModol}" style="width:15%" sortBy="#{so.jm}">
+						<h:outputText value="#{so.jm}" />
+				</p:column>
+				<p:column headerText="#{oceny.ussluch.sluchacze.pluton.idKurs.jSzkol}" rendered="#{oceny.ussluch.sluchacze.pluton.idKurs.jSzkol!=null}" style="width:15%" sortBy="#{so.js}">
+						<h:outputText value="#{so.js}" />
+				</p:column>
+				
+				<p:column headerText="Oceny bieżące" style="text-align:left">
+							<ui:repeat var="ocsph" value="#{oceny.naglowekListSluch.stream().filter(ong-> ong.getPrzedmiot().getIdPrzedmiot()==so.idPrzedmiot and (!ong.isOkresowa())).toList()}" varStatus="stsh">
+								<ui:repeat var="ocsp" value="#{ocsph.ocenas.stream().filter(ocl->ocl.sluchacze.idS==oceny.ussluch.sluchacze.idS and (!ocl.usunieta)).toList()}" varStatus="sts">
+													<h:outputText id="cells"  value="#{ocsp.ocenaWartosc}" style="font-family:times;font-size:15px;margin:2px;background:##{ocsp.kolor};
+													padding:0px 5px 0px 5px;border:1px solid #b7b7b7;border-radius:3px;cursor:pointer;display:inline-block" />
+													
+													<p:tooltip for="cells" id="tooltipCells" position="top" rendered="#{ocsp.ocenaWartosc!=null}">
+															<h:outputText value="#{ocsp.idUzytkownik.imieUsers} #{ocsp.idUzytkownik.nazwiskoUsers}/ " />
+															<h:outputText value="#{ocsp.dataOcena}">
+																<f:convertDateTime pattern="dd-MM-yyyy"/>
+															</h:outputText><br />
+															<h:outputText value="#{ocsph.zadanie}-#{ocsph.naglowek}" style="font-style:italic" /><br />
+															<h:outputText value="Komentarze: " rendered="#{ocsph.komentarz.length()>0  or (ocsp.komentarz.length()>0)}"/>
+															<h:outputText value="1.#{ocsph.komentarz}" style="font-style:italic" rendered="#{ocsph.komentarz.length()>0}"/>
+															<h:outputText value="2.#{ocsph.komentarz} #{ocsp.komentarz}" style="font-style:italic" rendered="#{ocsp.komentarz.length()>0}"/>
+													</p:tooltip>
+								</ui:repeat>
+							</ui:repeat>
+				</p:column>
+				<p:column headerText="Okr." style="text-align:left;width:15%">
+					<ui:repeat var="ocsph" value="#{oceny.naglowekListSluch.stream().filter(ong-> ong.getPrzedmiot().getIdPrzedmiot()==so.idPrzedmiot and (ong.isOkresowa())).toList()}" varStatus="stsh">
+								<ui:repeat var="ocsp" value="#{ocsph.ocenas.stream().filter(ocl->ocl.sluchacze.idS==oceny.ussluch.sluchacze.idS and (!ocl.usunieta)).toList()}" varStatus="sts">
+													<h:outputText id="cells"  value="#{ocsp.ocenaWartosc}" style="font-family:times;font-size:15px;margin:2px;background:##{ocsp.kolor};
+													padding:0px 5px 0px 5px;border:1px solid #b7b7b7;border-radius:3px;cursor:pointer;display:inline-block" />
+													
+													<p:tooltip for="cells" id="tooltipCells" position="top" rendered="#{ocsp.ocenaWartosc!=null}">
+															<h:outputText value="#{ocsp.idUzytkownik.imieUsers} #{ocsp.idUzytkownik.nazwiskoUsers} / " />
+															<h:outputText value="#{ocsp.dataOcena}">
+																<f:convertDateTime pattern="dd-MM-yyyy"/>
+															</h:outputText><br />
+															<h:outputText value="Ozn: #{ocsph.zadanie}-#{ocsph.naglowek} " style="font-style:italic" /><br />
+															<h:outputText value="Komentarze: " rendered="#{ocsph.komentarz.length()>0  or (ocsp.komentarz.length()>0)}"/><br />
+															<h:outputText value="1.#{ocsph.komentarz}" style="font-style:italic" rendered="#{ocsph.komentarz.length()>0}"/><br />
+															<h:outputText value="2.#{ocsph.komentarz} #{ocsp.komentarz}" style="font-style:italic" rendered="#{ocsp.komentarz.length()>0}"/>
+													</p:tooltip>
+								</ui:repeat>
+							</ui:repeat>
+				</p:column>
+				<p:rowExpansion > 
+						<p:dataTable id="sluchaczeOcenySzcz" var="sosz" value="#{oceny.pobierzOcenySluchaczJMJS(so.idPrzedmiot)}" 
+						emptyMessage="Brak wyników" rowStyleClass="#{sosz.ocenyNglowek.okresowa ? 'usunietyRow' : ''}" reflow="true" >
+							
+							<p:column headerText="Ocena" style="background:##{sosz.kolor}" >
+								<h:outputText value="#{sosz.ocenaWartosc}" style="font-weight:bold;color:darkblue;font-size:large"/>
+							</p:column>
+							<p:column headerText="Zadanie">
+								<h:outputText value="#{sosz.ocenyNglowek.zadanie}"/>
+							</p:column>
+							<p:column headerText="Opis(KPN)" style="text-align:left">
+								<h:outputText value="#{sosz.ocenyNglowek.naglowek}"/>
+							</p:column>
+							<p:column headerText="Komentarze" style="text-align:left">
+								<h:outputText value="#{sosz.ocenyNglowek.komentarz}"/><br/>
+								<h:outputText value="#{sosz.komentarz}"/>
+							</p:column>
+							<p:column headerText="Data">
+								<h:outputText value="#{sosz.dataOcena}">
+									<f:convertDateTime pattern="dd-MM-yyyy"/>
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Nauczyciel">
+								<h:outputText value="#{sosz.idUzytkownik.imieUsers} #{sosz.idUzytkownik.nazwiskoUsers}"/>
+							</p:column>
+						</p:dataTable>
+				</p:rowExpansion>
+		</p:dataTable>
+		<p:blockUI block="sluchaczeOceny" trigger="sluchaczeOceny" />   
+		</h:form>
+</p:panel>
+</p:outputPanel>
+</ui:define>
+<ui:define name="footer"></ui:define>
+</ui:composition>

@@ -1,0 +1,190 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/BasicTemplate.html">
+	
+<ui:define name="content">
+	<h:form id="termForm">		
+		   <p:growl id="messages" showDetail="true" />
+		<p:outputPanel deferred="true" id="contentTrescZajecia">
+			 <div class="shadow bg-white">
+					<p:toolbar  style="margin-bottom:10px;height:33px">
+									<f:facet name="right">
+												<h:panelGrid columns="2" rendered="#{logowanie.poziomUprawnien!='7'}">
+														<h:outputLabel value="Edycja: " />
+						        						 <p:selectBooleanButton id="value2" value="#{terminarz.edycja}" onLabel="Tak" offLabel="Nie" onIcon="fa fa-times" offIcon="fa fa-edit" >
+           														 <p:ajax listener="#{terminarz.edycjaListener}" update="eventDetails"  />
+        												</p:selectBooleanButton>
+				        						</h:panelGrid>
+				        			</f:facet>
+				        			<f:facet name="left">
+				        						
+				        			</f:facet>
+				     </p:toolbar>
+				
+				 
+				        <p:schedule id="scheduleTerm" value="#{terminarz.eventModel}" widgetVar="myschedule" timeZone="GMT+2" 
+				          locale="pl" draggable="true" class="scheduleTerminarz" view="month" rightHeaderTemplate="month,agendaWeek,agendaDay">
+				            <p:ajax event="dateSelect" listener="#{terminarz.onDateSelect}" update="eventDetails" />
+				            <p:ajax event="eventSelect" listener="#{terminarz.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+				           <p:ajax event="eventMove" listener="#{terminarz.onEventMove}" update="messages" /> 
+				            <p:ajax event="eventResize" listener="#{terminarz.onEventResize}" update="messages" />
+				        </p:schedule>
+				<div style="clear:both"></div>
+			</div>
+		</p:outputPanel>
+	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="my-dialog">
+        <p:commandButton value="Tak" type="button" styleClass="ui-confirmdialog-yes bg-danger" icon="fa fa-check" />
+        <p:commandButton value="Nie" type="button" styleClass="ui-confirmdialog-no bg-primary" icon="fa fa-times" />
+    </p:confirmDialog>  
+				 
+			<p:dialog widgetVar="eventDialog"  showEffect="clip" hideEffect="clip" id="eventDetails" 
+			visible="#{terminarz.pokazDialog}" modal="true" focus="pgterm" styleClass="my-dialog bg-light" width="500">
+			<p:ajax event="close" update="eventDetails" resetValues="true" />
+				   <f:facet name="header">Wydarzenie
+				   <span style="font-size:smaller"> 
+				   		<h:outputText value=" #{terminarz.ktoWpisalString(terminarz.terminarzEvent.ktoWpisal)} " style="color:lightgray"/>
+				   		<h:outputText value="#{terminarz.terminarzEvent.dataWpisu.time}" style="color:lightgray;font-weight:normal">
+				 		<f:convertDateTime  type="date" pattern="dd/MM/yyyy"/>
+				 		</h:outputText>
+				 </span>
+				   </f:facet>
+				   <p:outputPanel deferred="false" id="pgterm">		
+								<div class="ui-fluid shadow bg-white" style="overflow:auto;max-height:75vh">
+									    <div class="ui-g">
+		                						<div class="ui-g-6 ui-sm-12">
+		                						  <h:outputText for="od" value="Od: " style="font-style:italic"/>
+				           						  <p:calendar inputStyle="width:100%" id="od" value="#{terminarz.event.startDate}" timeZone="GMT+2" 
+				           						  			pattern="dd/MM/yyyy HH:mm" required="true" locale="pl" 
+				           						  			disabled="#{!terminarz.edycja}"
+				           						  			rendered="#{terminarz.terminarzEvent.idTerminarz==0 or logowanie.poziomUprawnien==1 or logowanie.idUsers==terminarz.terminarzEvent.ktoWpisal}"/>			 		
+		                						  <h:outputLabel value="#{terminarz.event.startDate}" style="font-weight:bold"
+		                						  rendered="#{!(terminarz.terminarzEvent.idTerminarz==0 or logowanie.poziomUprawnien==1 or logowanie.idUsers==terminarz.terminarzEvent.ktoWpisal)}">
+		                						    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+		                						  </h:outputLabel>
+		                						</div>
+		                						<div class="ui-g-6 ui-sm-12">
+		                							<h:outputText for="to" value="Do: " style="font-style:italic"/>
+				           						 	<p:calendar id="to" inputStyle="width:100%" value="#{terminarz.event.endDate}" timeZone="GMT+2" 
+				           						 			pattern="dd/MM/yyyy HH:mm" required="true" locale="pl"
+				           						 			disabled="#{!terminarz.edycja}"
+				           						 			rendered="#{terminarz.terminarzEvent.idTerminarz==0 or logowanie.poziomUprawnien==1 or logowanie.idUsers==terminarz.terminarzEvent.ktoWpisal}"/>			 		
+		                						
+		                						<h:outputLabel value="#{terminarz.event.endDate}" style="font-weight:bold"
+		                						  rendered="#{!(terminarz.terminarzEvent.idTerminarz==0 or logowanie.poziomUprawnien==1 or logowanie.idUsers==terminarz.terminarzEvent.ktoWpisal)}">
+		                						    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+		                						  </h:outputLabel>
+		                						</div>
+		                						<div class="ui-g-12">
+		                							   	<p:outputLabel for="title" value="Wpis: " style="font-style:italic"
+		                							   	rendered="#{terminarz.terminarzEvent.idTerminarz==0 or logowanie.poziomUprawnien==1 or logowanie.idUsers==terminarz.terminarzEvent.ktoWpisal}"	 />
+				          	  							<p:inputTextarea  id="title" value="#{terminarz.event.title}" required="true" 
+				          									disabled="#{!terminarz.edycja}"
+				           						 			rendered="#{terminarz.terminarzEvent.idTerminarz==0 or logowanie.poziomUprawnien==1 or logowanie.idUsers==terminarz.terminarzEvent.ktoWpisal}"			 		
+		                									 style="opacity:1 !important" 
+				          									autoResize="false"/>
+				          									
+				          								<h:outputLabel value="#{terminarz.event.title}" style="display:block; border-bottom:1px solid whitesmoke;border-top:1px solid whitesmoke; color:blue;padding:10px"
+				          								  rendered="#{!(terminarz.terminarzEvent.idTerminarz==0 or logowanie.poziomUprawnien==1 or logowanie.idUsers==terminarz.terminarzEvent.ktoWpisal)}">
+				          								</h:outputLabel>
+		                						</div>
+		                						<div class="ui-g-3">
+		                							    <h:outputText for="allDay" value="Cały dzień: " style="display:block;font-style:italic" />
+				           		 						<h:selectBooleanCheckbox id="allDay" value="#{terminarz.event.allDay}" 
+				           		 		disabled="#{!terminarz.edycja}"
+				 																rendered="#{terminarz.terminarzEvent.idTerminarz==0 or logowanie.poziomUprawnien==1 or logowanie.idUsers==terminarz.terminarzEvent.ktoWpisal}"	/>	
+		                						<h:outputLabel value="#{terminarz.event.allDay?'Tak':'Nie'}"
+		                						rendered="#{!(terminarz.terminarzEvent.idTerminarz==0 or logowanie.poziomUprawnien==1 or logowanie.idUsers==terminarz.terminarzEvent.ktoWpisal)}">
+		                						</h:outputLabel>
+		                						</div>
+		                						<div class="ui-g-9">
+		                							  			<h:outputText for="doWiadomosci" value="Do wiadomości:" style="font-style:italic"/>
+				 												<p:selectOneMenu id="doWiadomosci" value="#{terminarz.terminarzEvent.doWiadomosci}" 
+				 																	disabled="#{!terminarz.edycja}"
+				           						 			rendered="#{terminarz.terminarzEvent.idTerminarz==0 or logowanie.poziomUprawnien==1 or logowanie.idUsers==terminarz.terminarzEvent.ktoWpisal}"	>
+				 														<f:selectItem itemLabel="wpisujacy"  itemValue="wpisujacy" />
+				 														<f:selectItem itemLabel="zakład/wydział"  itemValue="#{logowanie.zakladUser}" />
+				 														<f:selectItem itemLabel="wszyscy"  itemValue="wszyscy" />
+				 												</p:selectOneMenu>
+				 												<h:outputLabel value="#{terminarz.terminarzEvent.doWiadomosci}" style="display:block"
+		                											rendered="#{!(terminarz.terminarzEvent.idTerminarz==0 or logowanie.poziomUprawnien==1 or logowanie.idUsers==terminarz.terminarzEvent.ktoWpisal)}">
+		                										</h:outputLabel>
+				 												<h:outputLabel 
+		                							value="Komp. plut. szkol.: #{terminarz.kompania}-#{terminarz.pluton}-#{terminarz.szkolenie}" 
+		                							rendered="#{(!terminarz.edycja and terminarz.szkolenie!=null) or !(terminarz.terminarzEvent.idTerminarz==0 or logowanie.poziomUprawnien==1 or logowanie.idUsers==terminarz.terminarzEvent.ktoWpisal)}" />
+		                						</div>
+		                						 
+		                						<div class="ui-g-12">
+		                						<p:outputPanel deferred="false" id="zmienPluton" rendered="#{terminarz.edycja and (terminarz.terminarzEvent.idTerminarz==0 or logowanie.poziomUprawnien==1 or logowanie.idUsers==terminarz.terminarzEvent.ktoWpisal)}">	
+		                						<div class="ui-g-12" style="background:#f8f8ff;border:1px solid whitesmoke">				
+		                								  <div class="ui-g-12">	
+		                								  <h:outputLabel>(Komp./Plut./Szkol.):</h:outputLabel>
+		                								  </div>
+		                								  <div class="ui-g-4 ui-sm-12">	
+																	    <p:selectOneMenu id="kompania" value="#{terminarz.kompania}" lazy="true" style="min-width:30%;">
+																    		<p:ajax event="change" listener="#{terminarz.changeKompania}" update="zmienPluton"/>
+																    		<f:selectItem />
+																        	 <f:selectItems value="#{terminarz.kompanieListNazwa}"/> 
+																  		</p:selectOneMenu>
+														   </div>
+														    <div class="ui-g-4 ui-sm-12">	
+																		<p:selectOneMenu  value="#{terminarz.pluton}" lazy="true"  style="min-width:30%">
+																		    <p:ajax event="change" listener="#{terminarz.changePluton}"  update="zmienPluton"/>
+																		    	<f:selectItem />
+																		         <f:selectItems value="#{terminarz.plutonListNazwa}"/> 
+																    </p:selectOneMenu>
+														 	</div>
+														 	 <div class="ui-g-4 ui-sm-12">	
+																    <p:selectOneMenu value="#{terminarz.szkolenie}" lazy="true" style="min-width:40%">
+																		    <p:ajax event="change" listener="#{terminarz.changeSzkolenie}" update="zmienPluton"/>
+																		   		 <f:selectItem />
+																		         <f:selectItems value="#{terminarz.plutonListSzkolenie}"/>
+																    </p:selectOneMenu>
+															</div>
+															</div>
+														</p:outputPanel>
+		                							</div> 		
+											 		 <c:choose>
+															 <c:when test="#{terminarz.edycja and (terminarz.terminarzEvent.idTerminarz==0 or logowanie.poziomUprawnien==1 or logowanie.idUsers==terminarz.terminarzEvent.ktoWpisal)}">
+															 <div class="ui-g-12">
+															 		 <div class="ui-g-4 ui-sm-12">	
+															 			  <p:commandButton id="removeButton" value="Usuń"  class="shadow bg-danger"
+															 		 					 actionListener="#{terminarz.removeEvent}" update=":termForm:messages"
+															 		 					 oncomplete="PF('myschedule').update();PF('eventDialog').hide();" 
+															 		 					 style="padding:5px">
+															 		 					 <p:confirm  header=" Uwaga, próbujesz usunąć ten wpis!" message=" Czy potwierdzasz? " /> 
+															 		 	 </p:commandButton>
+															        	</div>
+															        	<div class="ui-g-4 ui-sm-12">	
+															        		<p:commandButton type="reset" value="Czyść" class="shadow"
+															        						 style="padding:5px;width:100%"/>
+															        	</div>
+															        	<div class="ui-g-4 ui-sm-12">	
+															       		    <p:commandButton id="addButton" value="Zapisz"  class="shadow"
+															       		   					 actionListener="#{terminarz.addEvent}" 
+															       		   					 oncomplete="PF('myschedule').update()"
+															       		   					 style="padding:5px;width:100%"  update=":termForm:messages"/>
+															  		 </div>
+															  		 </div>
+															  </c:when>
+											 		</c:choose> 
+		                				</div>
+		                			
+		                		</div>
+		                		
+				    </p:outputPanel>   
+				  </p:dialog>			
+	</h:form>
+ </ui:define>
+	
+<ui:define name="footer"></ui:define>
+</ui:composition>
+
+
+
+
+

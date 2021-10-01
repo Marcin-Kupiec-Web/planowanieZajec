@@ -1,0 +1,86 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/BasicTemplate.html">
+	
+<ui:define name="leftPane"></ui:define>
+<ui:define name="content"> 
+<p:outputPanel deferred="true" id="contentTrescZajecia">			
+		<div class="ui-fluid bg-light">
+		    <div class="ui-g-12 ui-md-12 ui-lg-2 shadow" style="background:whitesmoke;z-index:1">
+					<ui:include src="/WEB-INF/templates/wiadomosciLeftPanel.html"/>		
+		    </div>
+		    <div class="ui-g-12 ui-md-12 ui-lg-10 ui-g-nopad bg-white shadow"  style="min-height:100vh;padding:20px">		 
+				<h:form id="formNowaWiadomosc" >
+		    						<p:growl id="msgs" showDetail="true" />
+						    <div class="ui-g">
+		                	<div class="ui-g-12">
+						            <h:outputLabel value="Tytuł : *" for="txt_tytul" class="m-2" />
+						            <p:inputText id="txt_tytul" value="#{nowaWiadomosc.wiadomosc.tytul}" required="true" style="width:100%"/>
+						 	</div>
+						 	<div class="ui-g-12">
+						            <h:outputLabel value="Wiadomość: *" for="txt_tresc" class="m-2" />
+					
+						             <p:textEditor widgetVar="editor" id="txt_tresc" value="#{nowaWiadomosc.wiadomosc.tresc}" height="300" style="margin-bottom:10px" placeholder="Wpisz wiadomość" required="true">
+								        <f:facet name="toolbar">
+								             <span class="ql-formats">
+								                <button class="ql-bold"></button>
+								                <button class="ql-italic"></button>
+								                <button class="ql-underline"></button>
+								                <button class="ql-strike"></button>
+								            </span>
+								            <span class="ql-formats">
+								                <select class="ql-font"></select>
+								                <select class="ql-size"></select>
+								            </span>
+								        </f:facet>
+								    </p:textEditor>
+						        </div> 
+						        <div class="ui-g-12">
+						        			<h:outputLabel class="m-3">Komp./Plut./Szkol.</h:outputLabel>
+											<p:panelGrid layout="grid" columns="3" id="zmienPluton" class="m-1 ui-noborder" >
+														    <p:selectOneMenu id="kompania" value="#{nowaWiadomosc.kompania}" lazy="true" required="true" style="min-width:15vh;">
+													    		<p:ajax event="change" listener="#{nowaWiadomosc.changeKompania}" update="zmienPluton, adresaci"/>
+													    		<f:selectItem />
+													        	 <f:selectItems value="#{nowaWiadomosc.kompanieListNazwa}"/> 
+													  		</p:selectOneMenu>
+															<p:selectOneMenu  value="#{nowaWiadomosc.pluton}" lazy="true" required="true" style="min-width:15vh">
+															    <p:ajax event="change" listener="#{nowaWiadomosc.changePluton}"  update="zmienPluton, adresaci"/>
+															    	<f:selectItem />
+															         <f:selectItems value="#{nowaWiadomosc.plutonListNazwa}"/> 
+													    </p:selectOneMenu>
+													    <p:selectOneMenu value="#{nowaWiadomosc.szkolenie}" lazy="true" required="true" style="min-width:20vh">
+															    <p:ajax event="change" listener="#{nowaWiadomosc.changeSzkolenie}" update="zmienPluton, adresaci"/>
+															   		 <f:selectItem />
+															         <f:selectItems value="#{nowaWiadomosc.plutonListSzkolenie}"/>
+													    </p:selectOneMenu>
+											</p:panelGrid>
+											<h:panelGrid id="adresaci" class="m-1" style="width:100%">
+						        	 <h:outputLabel for="multiple" value="Słuchacze: *" class="m-2"/>
+		       							 <p:selectCheckboxMenu id="multiple" value="#{nowaWiadomosc.selectedSluchacze}" label="Wybierz" multiple="true"
+		                            		  filter="true" filterMatchMode="startsWith" panelStyle="width:40%" style="width:100%" 
+		                            		  class="my-ui-selectcheckboxmenu-trigger-multi" required="true">		    
+		         				 		    <p:ajax event="toggleSelect" listener="#{nowaWiadomosc.selectedAll()}"/>
+		         				 		  <f:selectItems value="#{nowaWiadomosc.sluchaczeMultiList}" var="sluchacz" 
+		         				 		  itemLabel="#{sluchacz.nrDziennik}. #{sluchacz.nazwiskoSluchacz} #{sluchacz.imieSluchacz}" itemValue="#{sluchacz}"/>
+		       						 </p:selectCheckboxMenu>
+		       						 </h:panelGrid>
+						        </div>
+						        <div class="ui-g-12 m-2">
+						            <p:commandButton id="btn_add" class="shadow" style="float:right;display:inline-block;width:30%;padding:10px" value="Wyślij" update="formNowaWiadomosc" action="#{nowaWiadomosc.createNew()}" >
+						                <p:collector value="#{nowaWiadomosc.wiadomosc}" addTo="#{nowaWiadomosc.wiadomosci}" unique="true" />
+						            </p:commandButton>
+						            <div style="clear: both"></div>
+						            </div>
+						       </div>
+						</h:form>
+		  			</div>
+		  			<div style="clear:both"></div>
+			</div>				
+</p:outputPanel>
+ </ui:define>
+<ui:define name="footer"></ui:define>
+</ui:composition>

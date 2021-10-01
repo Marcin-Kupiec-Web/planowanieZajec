@@ -1,0 +1,141 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" >
+	
+		
+<div class="topnav shadow bg-secondary bord-none" id="myTopnav" >
+	<ul>
+  		<li>
+  				<p:link class="#{param.i==0?'active bord-none':''} fa fa-home topnavbtn shadow" outcome="/start/start.xhtml" value=" Start"  title="Start">
+			   		 <f:param name="i" value="0" />
+				</p:link>	
+		</li>
+		<li class="dropdown">
+				 <h:outputText  class="#{param.i==1?'active bord-none':''} fa fa-users-cog dropbtn"  value=" Uzytkownicy"  title="Uzytkownicy" rendered="#{poziomUprawnien eq 1}"/> 
+						<div class="dropdown-content">
+							   <p:link  value="Wykładowcy" outcome="/kontaUzytkownikow/wykladowcy.xhtml"  title="Wykładowcy" >
+			   		 				<f:param name="i" value="1" />
+							    </p:link>	  
+							     <p:link  value="Słuchacze" outcome="/kontaUzytkownikow/sluchacze.xhtml"  title="Słuclhacze">
+			   		 				<f:param name="i" value="1" />
+							    </p:link>
+						</div>
+		</li>
+		<li class="dropdown">
+				 <h:outputText  class="#{param.i==2?'active bord-none':''} fa fa-assistive-listening-systems dropbtn shadow"  
+				 value=" Rejestry"  title="Logi" rendered="#{poziomUprawnien eq 1}"/> 
+						<div class="dropdown-content">
+							   <p:link  value="Wpisy" outcome="/logiPage/wpisyRejestry.xhtml"  title="Wykładowcy">
+			   		 				<f:param name="i" value="2" />
+							    </p:link>	  
+							     <p:link  value="Dane osobowe" outcome="/logiPage/daneOsoboweRejestry.xhtml"  title="Dane osobowe">
+			   		 				<f:param name="i" value="2" />
+							    </p:link>
+						</div>
+		</li>	
+				<li class="dropdown">
+				 <h:outputText  class="#{param.i==3?'active bord-none':''} fa fa-toolbox dropbtn shadow"  value=" Baza dydakt."  title="Logi" /> 
+						<div class="dropdown-content dropdown-content-mega">
+							        <div class="row m-20">
+									        <div class="col-4 col-s-12">
+									          <h3>Planowanie</h3>
+									          <p:link  value="Struktury kursów" outcome="/zarzadzanie/strukturaKursow.xhtml"  title="Struktury kursów">
+			   		 									<f:param name="i" value="3" />
+							   				 </p:link>
+							   				  <p:link  value="Sale dydaktyczne" outcome="/zarzadzanie/sale.xhtml"  title="Sale">
+			   		 									<f:param name="i" value="3" />
+							   				 </p:link>
+									          <p:link  value="Dni wolne" outcome="/zarzadzanie/dniWolne.xhtml"  title="Dni wolne">
+			   		 									<f:param name="i" value="3" />
+							   				 </p:link>
+									          <p:link  value="Godziny zajęć" outcome="/zarzadzanie/godzinyZajec.xhtml"  title="Godziny Zajęć">
+			   		 									<f:param name="i" value="3" />
+							   				 </p:link>
+									        </div>
+									        <div class="col-4 col-s-12">
+									          <h3>Oddziały / sluchacze</h3>
+									           <p:link  value="Kompanie" outcome="/zarzadzanie/kompanie.xhtml"  title="Kompanie">
+			   		 									<f:param name="i" value="3" />
+							   				 </p:link>
+									           <p:link  value="Plutony" outcome="/zarzadzanie/plutony.xhtml"  title="Plutony">
+			   		 									<f:param name="i" value="3" />
+							   				 </p:link>
+									           <p:link  value="Słuchacze" outcome="/zarzadzanie/sluchacze.xhtml" rendered="#{poziomUprawnien eq 1}"  title="Słuchacze">
+			   		 									<f:param name="i" value="3" />
+							   				 </p:link>
+									        </div>
+									        <div class="col-4 col-s-12">
+									          <h3>Kadra</h3>
+									           <p:link  value="Wydziały/Zakłady" outcome="/zarzadzanie/zaklady.xhtml"  title="Wydziały">
+			   		 									<f:param name="i" value="3" />
+							   				 </p:link>
+									           <p:link  value="Specjalizacje" outcome="/zarzadzanie/specjalizacje.xhtml"  title="Specjalizacje">
+			   		 									<f:param name="i" value="3" />
+							   				 </p:link>
+									        </div>
+									      </div>
+						</div>
+		</li>	
+		<li style="float:right">
+		    <p:link  class="fa fa-user  topnavbtn shadow"  outcome="/index.xhtml"   title="Wyloguj" style="width:50px"/>
+		    
+		</li>
+ </ul>      
+			</div>
+	
+	<div style="clear:both"></div>
+   
+
+</ui:composition>
+
+
+	
+	
+	<!-- 
+<h:form>  
+    <p:growl id="messages"/>
+   			 <p:menubar styleClass="headerMenuBar">
+   			  <p:menuitem icon="fa fa-building" class="shadow" value=" Start " url="/dziennikSzkolenAdmin/start/start.xhtml"  style="font-weight:bold;color:purple;margin-left:3px"/>
+        			<p:submenu class="shadow" label="Użytkownicy" icon="ui-icon-person" rendered="#{poziomUprawnien eq 1}">
+           				 <p:menuitem value="Wykładowcy" url="/dziennikSzkolenAdmin/kontaUzytkownikow/wykladowcy.xhtml" />
+           				 <p:menuitem value="Uczniowie" url="/dziennikSzkolenAdmin/kontaUzytkownikow/sluchacze.xhtml"  />
+     			   </p:submenu>
+      			  <p:submenu class="shadow" label="Rejestry" icon="ui-icon-pin-s" rendered="#{poziomUprawnien eq 1}">
+         			   <p:menuitem value="Wpisy" url="/dziennikSzkolenAdmin/logiPage/wpisyRejestry.xhtml" icon="ui-icon-pencil" />
+         			   <p:menuitem value="Dane osobowe" url="/dziennikSzkolenAdmin/logiPage/daneOsoboweRejestry.xhtml" icon="ui-icon-contact" />
+      			  </p:submenu>
+      			  <p:submenu class="shadow" label="Pomoc" icon="ui-icon-help">
+         				   <p:menuitem value="Instrukcja" url="#" />
+      			  </p:submenu>
+    		    <p:submenu class="shadow" label="Zarządzanie" icon="ui-icon-gear">
+    		    	<p:submenu label="Kursy">
+				         <p:menuitem value="Struktura kursów" url="/dziennikSzkolenAdmin/zarzadzanie/strukturaKursow.xhtml" />
+				    </p:submenu>
+         		  <p:submenu label="Oddziały">
+				         <p:menuitem value="Kompanie" url="/dziennikSzkolenAdmin/zarzadzanie/kompanie.xhtml" />
+				         <p:menuitem value="Plutony" url="/dziennikSzkolenAdmin/zarzadzanie/plutony.xhtml" />
+				    </p:submenu>
+				      <p:submenu label="Słuchacze" rendered="#{poziomUprawnien eq 1 or (poziomUprawnien eq 5)}">
+				         <p:menuitem value="Słuchacze" url="/dziennikSzkolenAdmin/zarzadzanie/sluchacze.xhtml" />
+				    </p:submenu>
+				     <p:submenu label="Wydziały / Zakłady">
+				        <p:menuitem value="Zakłady" url="/dziennikSzkolenAdmin/zarzadzanie/zaklady.xhtml"/>
+				         <p:menuitem value="Specjalizacje" url="/dziennikSzkolenAdmin/zarzadzanie/specjalizacje.xhtml" />
+				    </p:submenu>
+				    <p:submenu label="Baza dydaktyczna">
+				         <p:menuitem value="Sale" url="/dziennikSzkolenAdmin/zarzadzanie/sale.xhtml" />
+				    </p:submenu>
+				     <p:submenu label="Planowanie" rendered="#{poziomUprawnien eq 1 or (poziomUprawnien eq 4) or (poziomUprawnien eq 5) or (poziomUprawnien eq 6)}" >
+				     	 <p:menuitem value="Dni wolne" url="/dziennikSzkolenAdmin/zarzadzanie/dniWolne.xhtml" />
+				     	  <p:menuitem value="Godziny zajęć" url="/dziennikSzkolenAdmin/zarzadzanie/godzinyZajec.xhtml" />
+				     </p:submenu>
+       			 </p:submenu>
+       			 <f:facet name="options" class="shadow">
+       					 <ui:insert name="szukaj"></ui:insert>
+        			    <p:commandButton  value="Wyloguj" action="#{logowanie.logout}" icon="ui-icon-extlink" />
+      			  </f:facet>
+    </p:menubar>
+</h:form>
+-->
